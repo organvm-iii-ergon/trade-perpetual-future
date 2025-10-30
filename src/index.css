@@ -25,7 +25,7 @@
   --popover: oklch(0.20 0.03 260);
   --popover-foreground: oklch(0.95 0 0);
   
-  --primary: oklch(0.25 0.15 285);
+  --primary: oklch(0.60 0.25 285);
   --primary-foreground: oklch(1 0 0);
   
   --secondary: oklch(0.25 0.05 260);
@@ -49,6 +49,12 @@
   
   --short: oklch(0.70 0.25 350);
   --short-foreground: oklch(0.15 0.02 260);
+  
+  --cyan: oklch(0.70 0.20 220);
+  --cyan-foreground: oklch(0.15 0.02 260);
+  
+  --amber: oklch(0.75 0.20 70);
+  --amber-foreground: oklch(0.15 0.02 260);
   
   --radius: 0.75rem;
 }
@@ -78,6 +84,10 @@
   --color-long-foreground: var(--long-foreground);
   --color-short: var(--short);
   --color-short-foreground: var(--short-foreground);
+  --color-cyan: var(--cyan);
+  --color-cyan-foreground: var(--cyan-foreground);
+  --color-amber: var(--amber);
+  --color-amber-foreground: var(--amber-foreground);
   
   --radius-sm: calc(var(--radius) * 0.5);
   --radius-md: var(--radius);
@@ -107,10 +117,26 @@
   }
 }
 
+@keyframes price-update {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .animate-slide-up {
   animation: slideUp 0.3s ease-out;
 }
 
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-price-update {
+  animation: price-update 0.3s ease-in-out;
 }
