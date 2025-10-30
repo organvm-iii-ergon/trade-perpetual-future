@@ -26,57 +26,57 @@ export function AffiliateTab({ stats, userTier }: AffiliateTabProps) {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2">
-            <ShareNetwork size={28} weight="fill" />
+            <ShareNetwork size={28} weight="duotone" className="text-cyan" />
             Affiliate Program
           </h2>
-          <p className="text-muted-foreground mt-1">Earn 15% commission on referrals</p>
+          <p className="text-foreground/70 mt-1">Earn 15% commission on referrals</p>
         </div>
-        <Badge variant="secondary" className="gap-2 text-lg px-4 py-2">
+        <Badge variant="secondary" className="gap-2 text-lg px-4 py-2 glass">
           <span className="text-2xl">{getTierIcon(userTier)}</span>
           <span className={getTierColor(userTier)}>{userTier.toUpperCase()}</span>
         </Badge>
       </div>
 
       <div className="grid md:grid-cols-3 gap-4">
-        <Card className="p-6">
+        <div className="glass-strong rounded-3xl p-6 glass-hover">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-lg bg-primary/20">
-              <CurrencyDollar size={24} className="text-primary" />
+            <div className="p-3 rounded-xl bg-primary/30 backdrop-blur-sm">
+              <CurrencyDollar size={28} className="text-primary" weight="duotone" />
             </div>
-            <span className="text-sm text-muted-foreground">Total Earned</span>
+            <span className="text-sm text-foreground/70">Total Earned</span>
           </div>
           <div className="font-mono text-3xl font-bold">${stats.totalCommissions.toFixed(2)}</div>
-          <div className="text-xs text-muted-foreground mt-1">Lifetime commissions</div>
-        </Card>
+          <div className="text-xs text-foreground/60 mt-1">Lifetime commissions</div>
+        </div>
 
-        <Card className="p-6">
+        <div className="glass-strong rounded-3xl p-6 glass-hover">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-lg bg-cyan/20">
-              <Users size={24} className="text-cyan" />
+            <div className="p-3 rounded-xl bg-cyan/30 backdrop-blur-sm">
+              <Users size={28} className="text-cyan" weight="duotone" />
             </div>
-            <span className="text-sm text-muted-foreground">Referrals</span>
+            <span className="text-sm text-foreground/70">Referrals</span>
           </div>
           <div className="font-mono text-3xl font-bold">{stats.totalReferrals}</div>
-          <div className="text-xs text-muted-foreground mt-1">
+          <div className="text-xs text-foreground/60 mt-1">
             {stats.activeReferrals} active traders
           </div>
-        </Card>
+        </div>
 
-        <Card className="p-6">
+        <div className="glass-strong rounded-3xl p-6 glass-hover">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-lg bg-long/20">
-              <CurrencyDollar size={24} className="text-long" />
+            <div className="p-3 rounded-xl bg-long/30 backdrop-blur-sm">
+              <CurrencyDollar size={28} className="text-long" weight="duotone" />
             </div>
-            <span className="text-sm text-muted-foreground">Referral Volume</span>
+            <span className="text-sm text-foreground/70">Referral Volume</span>
           </div>
           <div className="font-mono text-3xl font-bold">
             ${(stats.lifetimeVolume / 1000).toFixed(0)}K
           </div>
-          <div className="text-xs text-muted-foreground mt-1">Total trading volume</div>
-        </Card>
+          <div className="text-xs text-foreground/60 mt-1">Total trading volume</div>
+        </div>
       </div>
 
-      <Card className="p-6">
+      <div className="glass-strong rounded-3xl p-6">
         <h3 className="font-semibold text-lg mb-4">Your Referral Link</h3>
         <div className="space-y-4">
           <div>
@@ -94,9 +94,9 @@ export function AffiliateTab({ stats, userTier }: AffiliateTabProps) {
               </Button>
             </div>
           </div>
-          <div className="bg-muted rounded-lg p-4">
+          <div className="glass rounded-2xl p-4 border border-white/10">
             <h4 className="font-semibold text-sm mb-2">How it works:</h4>
-            <ul className="text-sm text-muted-foreground space-y-1">
+            <ul className="text-sm text-foreground/70 space-y-1">
               <li>• Share your unique referral link with friends</li>
               <li>• They sign up and start trading</li>
               <li>• You earn 15% of their trading fees forever</li>
@@ -104,33 +104,33 @@ export function AffiliateTab({ stats, userTier }: AffiliateTabProps) {
             </ul>
           </div>
         </div>
-      </Card>
+      </div>
 
-      <Card className="p-6">
+      <div className="glass-strong rounded-3xl p-6">
         <h3 className="font-semibold text-lg mb-4">Commission Tiers</h3>
         <div className="grid md:grid-cols-4 gap-4">
-          <div className="p-4 rounded-lg bg-muted">
+          <div className="glass rounded-2xl p-4 border border-white/10">
             <div className="text-3xl mb-2">🥉</div>
             <div className="font-semibold">Bronze</div>
-            <div className="text-xs text-muted-foreground mt-1">Start here</div>
+            <div className="text-xs text-foreground/60 mt-1">Start here</div>
           </div>
-          <div className="p-4 rounded-lg bg-muted">
+          <div className="glass rounded-2xl p-4 border border-white/10">
             <div className="text-3xl mb-2">⭐</div>
             <div className="font-semibold">Silver</div>
-            <div className="text-xs text-muted-foreground mt-1">$10K+ volume</div>
+            <div className="text-xs text-foreground/60 mt-1">$10K+ volume</div>
           </div>
-          <div className="p-4 rounded-lg bg-muted">
+          <div className="glass rounded-2xl p-4 border border-white/10">
             <div className="text-3xl mb-2">👑</div>
             <div className="font-semibold">Gold</div>
-            <div className="text-xs text-muted-foreground mt-1">$100K+ volume</div>
+            <div className="text-xs text-foreground/60 mt-1">$100K+ volume</div>
           </div>
-          <div className="p-4 rounded-lg bg-muted">
+          <div className="glass rounded-2xl p-4 border border-white/10">
             <div className="text-3xl mb-2">💎</div>
             <div className="font-semibold">Platinum</div>
-            <div className="text-xs text-muted-foreground mt-1">$1M+ volume</div>
+            <div className="text-xs text-foreground/60 mt-1">$1M+ volume</div>
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   )
 }

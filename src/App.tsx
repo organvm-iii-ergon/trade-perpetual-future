@@ -431,51 +431,61 @@ function App() {
   const userTier = getUserTier(currentUserProfile)
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen text-foreground relative overflow-hidden">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-96 h-96 bg-primary/30 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/30 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/3 w-96 h-96 bg-cyan/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+      </div>
+
       <Toaster position="top-right" />
 
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+      <header className="glass sticky top-0 z-50 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-3">
-              <div className="text-3xl">💥</div>
+            <div className="flex items-center gap-3 animate-slide-up">
+              <div className="text-4xl animate-pulse-glow">💥</div>
               <div>
-                <h1 className="text-2xl font-bold tracking-tight">Bang Perp Exchange</h1>
+                <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-primary via-accent to-cyan bg-clip-text text-transparent">
+                  Bang Perp Exchange
+                </h1>
                 <p className="text-xs text-muted-foreground">Social Trading Platform</p>
               </div>
             </div>
 
             <div className="flex items-center gap-4">
-              <Card className="p-3 bg-card/80">
+              <div className="glass-strong rounded-2xl p-4 glass-hover">
                 <div className="flex items-center gap-3">
-                  <Wallet size={20} className="text-primary" />
+                  <Wallet size={22} className="text-primary" />
                   <div>
                     <div className="text-xs text-muted-foreground">Balance</div>
-                    <div className="font-mono font-semibold">${currentBalance.toFixed(2)}</div>
+                    <div className="font-mono font-bold text-lg">${currentBalance.toFixed(2)}</div>
                   </div>
                 </div>
-              </Card>
+              </div>
 
-              <Card className="p-3 bg-card/80">
+              <div className="glass-strong rounded-2xl p-4 glass-hover">
                 <div className="flex items-center gap-3">
-                  <ChartLine size={20} className="text-primary" />
+                  <ChartLine size={22} className="text-accent" />
                   <div>
                     <div className="text-xs text-muted-foreground">Portfolio</div>
-                    <div className="font-mono font-semibold">${totalValue.toFixed(2)}</div>
+                    <div className="font-mono font-bold text-lg">${totalValue.toFixed(2)}</div>
                   </div>
                 </div>
-              </Card>
+              </div>
 
-              <div className="flex items-center gap-3 border-l border-border pl-4">
-                <Avatar className="h-10 w-10">
+              <div className="flex items-center gap-3 glass-strong rounded-2xl px-4 py-2">
+                <Avatar className="h-10 w-10 ring-2 ring-primary/50">
                   <AvatarImage src={currentUser.avatarUrl} />
-                  <AvatarFallback>{currentUser.login[0].toUpperCase()}</AvatarFallback>
+                  <AvatarFallback className="bg-primary/20 text-primary font-bold">
+                    {currentUser.login[0].toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
                 <div>
                   <div className="font-semibold text-sm">{currentUser.login}</div>
-                  <Badge variant="secondary" className="text-xs">{userTier}</Badge>
+                  <Badge variant="secondary" className="text-xs glass">{userTier}</Badge>
                 </div>
-                <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                <Button variant="ghost" size="sm" onClick={handleSignOut} className="hover:bg-white/10">
                   <SignOut size={18} />
                 </Button>
               </div>
@@ -484,27 +494,27 @@ function App() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-          <TabsList className="grid w-full grid-cols-5 mb-8">
-            <TabsTrigger value="trade" className="gap-2">
-              <ChartLine size={18} />
+          <TabsList className="glass-strong grid w-full grid-cols-5 mb-8 p-2 h-auto">
+            <TabsTrigger value="trade" className="gap-2 data-[state=active]:glass-strong data-[state=active]:shadow-lg transition-all">
+              <ChartLine size={18} weight="duotone" />
               Trade
             </TabsTrigger>
-            <TabsTrigger value="games" className="gap-2">
-              <DiceThree size={18} />
+            <TabsTrigger value="games" className="gap-2 data-[state=active]:glass-strong data-[state=active]:shadow-lg transition-all">
+              <DiceThree size={18} weight="duotone" />
               Games
             </TabsTrigger>
-            <TabsTrigger value="leaderboard" className="gap-2">
-              <Trophy size={18} />
+            <TabsTrigger value="leaderboard" className="gap-2 data-[state=active]:glass-strong data-[state=active]:shadow-lg transition-all">
+              <Trophy size={18} weight="duotone" />
               Leaderboard
             </TabsTrigger>
-            <TabsTrigger value="affiliate" className="gap-2">
-              <ShareNetwork size={18} />
+            <TabsTrigger value="affiliate" className="gap-2 data-[state=active]:glass-strong data-[state=active]:shadow-lg transition-all">
+              <ShareNetwork size={18} weight="duotone" />
               Affiliate
             </TabsTrigger>
-            <TabsTrigger value="profile" className="gap-2">
-              <TrendUp size={18} />
+            <TabsTrigger value="profile" className="gap-2 data-[state=active]:glass-strong data-[state=active]:shadow-lg transition-all">
+              <TrendUp size={18} weight="duotone" />
               Profile
             </TabsTrigger>
           </TabsList>
@@ -524,9 +534,9 @@ function App() {
             <div className="grid lg:grid-cols-2 gap-6">
               <TradingPanel market={selectedMarket} balance={currentBalance} onTrade={handleTrade} />
 
-              <Card className="p-6">
+              <div className="glass-strong rounded-3xl p-6">
                 <Tabs defaultValue="open" className="w-full">
-                  <TabsList className="w-full mb-4">
+                  <TabsList className="w-full mb-4 glass">
                     <TabsTrigger value="open" className="flex-1">
                       Open Positions ({currentPositions.length})
                     </TabsTrigger>
@@ -539,8 +549,8 @@ function App() {
                     {currentPositions.length === 0 ? (
                       <div className="text-center py-12">
                         <div className="text-4xl mb-3">📊</div>
-                        <p className="text-muted-foreground">No open positions</p>
-                        <p className="text-sm text-muted-foreground mt-1">Open your first trade to get started</p>
+                        <p className="text-foreground/70">No open positions</p>
+                        <p className="text-sm text-foreground/60 mt-1">Open your first trade to get started</p>
                       </div>
                     ) : (
                       <ScrollArea className="h-[500px] pr-4">
@@ -555,10 +565,10 @@ function App() {
                     {currentPositions.length > 0 && (
                       <>
                         <Separator className="my-4" />
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-muted-foreground">Total Unrealized P&L</span>
+                        <div className="flex justify-between items-center px-2">
+                          <span className="text-sm text-foreground/70">Total Unrealized P&L</span>
                           <span
-                            className={`font-mono font-semibold text-lg ${
+                            className={`font-mono font-bold text-xl ${
                               totalUnrealizedPnl >= 0 ? 'text-long' : 'text-short'
                             }`}
                           >
@@ -573,47 +583,47 @@ function App() {
                     {currentClosedPositions.length === 0 ? (
                       <div className="text-center py-12">
                         <div className="text-4xl mb-3">📜</div>
-                        <p className="text-muted-foreground">No trading history</p>
-                        <p className="text-sm text-muted-foreground mt-1">Your closed positions will appear here</p>
+                        <p className="text-foreground/70">No trading history</p>
+                        <p className="text-sm text-foreground/60 mt-1">Your closed positions will appear here</p>
                       </div>
                     ) : (
                       <ScrollArea className="h-[500px] pr-4">
                         <div className="space-y-3">
                           {currentClosedPositions.map((position) => (
-                            <Card key={position.id} className="p-4">
+                            <div key={position.id} className="glass rounded-2xl p-4 border border-white/10">
                               <div className="flex items-center justify-between mb-3">
                                 <div className="flex items-center gap-2">
                                   <span className="font-semibold">{position.marketSymbol}</span>
-                                  <span className={`text-xs ${position.side === 'long' ? 'text-long' : 'text-short'}`}>
+                                  <span className={`text-xs font-semibold px-2 py-1 rounded-lg ${position.side === 'long' ? 'text-long bg-long/20' : 'text-short bg-short/20'}`}>
                                     {position.side.toUpperCase()}
                                   </span>
                                 </div>
-                                <div className={`font-mono ${position.realizedPnl >= 0 ? 'text-long' : 'text-short'}`}>
+                                <div className={`font-mono font-bold ${position.realizedPnl >= 0 ? 'text-long' : 'text-short'}`}>
                                   {position.realizedPnl >= 0 ? '+' : ''}${position.realizedPnl.toFixed(2)}
                                 </div>
                               </div>
                               <div className="grid grid-cols-3 gap-2 text-xs">
                                 <div>
-                                  <span className="text-muted-foreground">Entry: </span>
-                                  <span className="font-mono">${position.entryPrice.toFixed(2)}</span>
+                                  <span className="text-foreground/60">Entry: </span>
+                                  <span className="font-mono font-semibold">${position.entryPrice.toFixed(2)}</span>
                                 </div>
                                 <div>
-                                  <span className="text-muted-foreground">Exit: </span>
-                                  <span className="font-mono">${position.exitPrice.toFixed(2)}</span>
+                                  <span className="text-foreground/60">Exit: </span>
+                                  <span className="font-mono font-semibold">${position.exitPrice.toFixed(2)}</span>
                                 </div>
                                 <div>
-                                  <span className="text-muted-foreground">Size: </span>
-                                  <span className="font-mono">${position.size.toFixed(2)}</span>
+                                  <span className="text-foreground/60">Size: </span>
+                                  <span className="font-mono font-semibold">${position.size.toFixed(2)}</span>
                                 </div>
                               </div>
-                            </Card>
+                            </div>
                           ))}
                         </div>
                       </ScrollArea>
                     )}
                   </TabsContent>
                 </Tabs>
-              </Card>
+              </div>
             </div>
           </TabsContent>
 
@@ -642,47 +652,47 @@ function App() {
 
           <TabsContent value="profile">
             <div className="space-y-6">
-              <Card className="p-6">
+              <div className="glass-strong rounded-3xl p-6">
                 <h2 className="text-2xl font-bold mb-4">Your Stats</h2>
                 <div className="grid md:grid-cols-4 gap-4">
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">Total P&L</div>
+                  <div className="glass rounded-2xl p-4 border border-white/10">
+                    <div className="text-sm text-foreground/70 mb-1">Total P&L</div>
                     <div className={`font-mono text-2xl font-bold ${currentUserProfile.totalPnl >= 0 ? 'text-long' : 'text-short'}`}>
                       {currentUserProfile.totalPnl >= 0 ? '+' : ''}${currentUserProfile.totalPnl.toFixed(2)}
                     </div>
                   </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">Win Rate</div>
+                  <div className="glass rounded-2xl p-4 border border-white/10">
+                    <div className="text-sm text-foreground/70 mb-1">Win Rate</div>
                     <div className="font-mono text-2xl font-bold">
                       {(currentUserProfile.winRate * 100).toFixed(1)}%
                     </div>
                   </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">Total Trades</div>
+                  <div className="glass rounded-2xl p-4 border border-white/10">
+                    <div className="text-sm text-foreground/70 mb-1">Total Trades</div>
                     <div className="font-mono text-2xl font-bold">{currentUserProfile.totalTrades}</div>
                   </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">Volume</div>
+                  <div className="glass rounded-2xl p-4 border border-white/10">
+                    <div className="text-sm text-foreground/70 mb-1">Volume</div>
                     <div className="font-mono text-2xl font-bold">
                       ${(currentUserProfile.totalVolume / 1000).toFixed(0)}K
                     </div>
                   </div>
                 </div>
-              </Card>
+              </div>
 
-              <Card className="p-6">
+              <div className="glass-strong rounded-3xl p-6">
                 <h3 className="text-xl font-bold mb-4">Game Stats</h3>
                 <div className="grid md:grid-cols-3 gap-4">
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">Wins</div>
+                  <div className="glass rounded-2xl p-4 border border-white/10">
+                    <div className="text-sm text-foreground/70 mb-1">Wins</div>
                     <div className="font-mono text-2xl font-bold text-long">{currentUserProfile.gameWins}</div>
                   </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">Losses</div>
+                  <div className="glass rounded-2xl p-4 border border-white/10">
+                    <div className="text-sm text-foreground/70 mb-1">Losses</div>
                     <div className="font-mono text-2xl font-bold text-short">{currentUserProfile.gameLosses}</div>
                   </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">Win Rate</div>
+                  <div className="glass rounded-2xl p-4 border border-white/10">
+                    <div className="text-sm text-foreground/70 mb-1">Win Rate</div>
                     <div className="font-mono text-2xl font-bold">
                       {currentUserProfile.gameWins + currentUserProfile.gameLosses > 0
                         ? ((currentUserProfile.gameWins / (currentUserProfile.gameWins + currentUserProfile.gameLosses)) * 100).toFixed(1)
@@ -690,18 +700,18 @@ function App() {
                     </div>
                   </div>
                 </div>
-              </Card>
+              </div>
             </div>
           </TabsContent>
         </Tabs>
       </main>
 
-      <footer className="border-t border-border mt-16 py-8">
+      <footer className="glass relative mt-16 py-8 border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-sm text-muted-foreground mb-2">
+          <p className="text-sm text-foreground/80 mb-2">
             ⚠️ Trading and gaming involve risk. Only invest what you can afford to lose.
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-foreground/70">
             Peer-to-peer liquidity model • Provably fair games • 15% affiliate commissions
           </p>
         </div>

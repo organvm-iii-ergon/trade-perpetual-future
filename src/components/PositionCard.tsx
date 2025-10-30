@@ -15,9 +15,9 @@ export function PositionCard({ position, onClose }: PositionCardProps) {
   const isProfitable = position.unrealizedPnl >= 0
 
   return (
-    <Card className="p-4 animate-slide-up">
+    <div className="glass-strong rounded-2xl p-4 animate-slide-up border border-white/10">
       <div className="flex items-start justify-between gap-4 mb-3">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Badge
             variant={isLong ? 'default' : 'destructive'}
             className={cn(
@@ -25,41 +25,41 @@ export function PositionCard({ position, onClose }: PositionCardProps) {
               isLong && 'bg-long text-long-foreground hover:bg-long'
             )}
           >
-            {isLong ? <TrendUp weight="bold" size={12} /> : <TrendDown weight="bold" size={12} />}
+            {isLong ? <TrendUp weight="duotone" size={14} /> : <TrendDown weight="duotone" size={14} />}
             {isLong ? 'LONG' : 'SHORT'}
           </Badge>
-          <span className="font-semibold">{position.marketSymbol}</span>
-          <Badge variant="outline" className="gap-1 text-xs">
-            <Lightning weight="fill" size={10} />
+          <span className="font-semibold text-lg">{position.marketSymbol}</span>
+          <Badge variant="outline" className="gap-1 text-xs glass">
+            <Lightning weight="fill" size={12} />
             {position.leverage}x
           </Badge>
         </div>
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 w-8 p-0"
+          className="h-8 w-8 p-0 hover:bg-white/10"
           onClick={() => onClose(position.id)}
         >
-          <X size={16} />
+          <X size={18} />
         </Button>
       </div>
 
       <div className="grid grid-cols-2 gap-3 text-sm mb-3">
         <div>
-          <div className="text-muted-foreground text-xs mb-1">Size</div>
-          <div className="font-mono">${position.size.toFixed(2)}</div>
+          <div className="text-foreground/60 text-xs mb-1">Size</div>
+          <div className="font-mono font-semibold">${position.size.toFixed(2)}</div>
         </div>
         <div>
-          <div className="text-muted-foreground text-xs mb-1">Entry Price</div>
-          <div className="font-mono">${position.entryPrice.toFixed(2)}</div>
+          <div className="text-foreground/60 text-xs mb-1">Entry Price</div>
+          <div className="font-mono font-semibold">${position.entryPrice.toFixed(2)}</div>
         </div>
         <div>
-          <div className="text-muted-foreground text-xs mb-1">Current Price</div>
-          <div className="font-mono">${position.currentPrice.toFixed(2)}</div>
+          <div className="text-foreground/60 text-xs mb-1">Current Price</div>
+          <div className="font-mono font-semibold">${position.currentPrice.toFixed(2)}</div>
         </div>
         <div>
-          <div className="text-muted-foreground text-xs mb-1">Liq. Price</div>
-          <div className="font-mono text-destructive text-xs">
+          <div className="text-foreground/60 text-xs mb-1">Liq. Price</div>
+          <div className="font-mono text-destructive text-xs font-semibold">
             ${position.liquidationPrice.toFixed(2)}
           </div>
         </div>
@@ -67,20 +67,20 @@ export function PositionCard({ position, onClose }: PositionCardProps) {
 
       <div
         className={cn(
-          'rounded-lg p-3 flex items-center justify-between',
-          isProfitable ? 'bg-long/10' : 'bg-short/10'
+          'glass rounded-xl p-3 flex items-center justify-between border',
+          isProfitable ? 'bg-long/20 border-long/30' : 'bg-short/20 border-short/30'
         )}
       >
         <div>
-          <div className="text-xs text-muted-foreground mb-1">Unrealized P&L</div>
-          <div className={cn('font-mono font-semibold text-lg', isProfitable ? 'text-long' : 'text-short')}>
+          <div className="text-xs text-foreground/70 mb-1">Unrealized P&L</div>
+          <div className={cn('font-mono font-bold text-xl', isProfitable ? 'text-long' : 'text-short')}>
             {isProfitable ? '+' : ''}${position.unrealizedPnl.toFixed(2)}
           </div>
         </div>
-        <div className={cn('font-mono text-2xl font-bold', isProfitable ? 'text-long' : 'text-short')}>
+        <div className={cn('font-mono text-3xl font-bold', isProfitable ? 'text-long' : 'text-short')}>
           {isProfitable ? '+' : ''}{position.unrealizedPnlPercent.toFixed(2)}%
         </div>
       </div>
-    </Card>
+    </div>
   )
 }

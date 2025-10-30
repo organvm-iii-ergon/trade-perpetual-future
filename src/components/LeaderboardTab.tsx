@@ -23,24 +23,24 @@ export function LeaderboardTab({
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold flex items-center gap-2">
-          <Trophy size={28} weight="fill" className="text-amber" />
+          <Trophy size={28} weight="duotone" className="text-amber" />
           Leaderboard
         </h2>
-        <p className="text-muted-foreground mt-1">Top performers across the platform</p>
+        <p className="text-foreground/70 mt-1">Top performers across the platform</p>
       </div>
 
       <Tabs defaultValue="pnl" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="glass-strong grid w-full grid-cols-3">
           <TabsTrigger value="pnl" className="gap-2">
-            <TrendUp size={16} />
+            <TrendUp size={16} weight="duotone" />
             P&L
           </TabsTrigger>
           <TabsTrigger value="volume" className="gap-2">
-            <TrendUp size={16} />
+            <TrendUp size={16} weight="duotone" />
             Volume
           </TabsTrigger>
           <TabsTrigger value="affiliate" className="gap-2">
-            <ShareNetwork size={16} />
+            <ShareNetwork size={16} weight="duotone" />
             Affiliate
           </TabsTrigger>
         </TabsList>
@@ -107,22 +107,24 @@ function LeaderboardCard({ entry, isCurrentUser, valueLabel, valueColor, valuePr
   const rankBadge = getRankBadge(entry.rank)
 
   return (
-    <Card className={`p-4 ${isCurrentUser ? 'ring-2 ring-primary' : ''}`}>
+    <div className={`glass-strong rounded-2xl p-4 border ${isCurrentUser ? 'border-primary/60 ring-2 ring-primary/30' : 'border-white/10'}`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="text-2xl font-bold w-12 text-center">
             <span className={rankBadge.color}>{rankBadge.icon}</span>
           </div>
-          <Avatar className="h-10 w-10">
+          <Avatar className="h-12 w-12 ring-2 ring-white/20">
             <AvatarImage src={entry.avatarUrl} />
-            <AvatarFallback>{entry.username[0].toUpperCase()}</AvatarFallback>
+            <AvatarFallback className="bg-primary/20 text-primary font-bold">
+              {entry.username[0].toUpperCase()}
+            </AvatarFallback>
           </Avatar>
           <div>
             <div className="font-semibold flex items-center gap-2">
               {entry.username}
-              {isCurrentUser && <Badge variant="secondary">You</Badge>}
+              {isCurrentUser && <Badge variant="secondary" className="glass">You</Badge>}
             </div>
-            <div className="text-xs text-muted-foreground">{valueLabel}</div>
+            <div className="text-xs text-foreground/60">{valueLabel}</div>
           </div>
         </div>
         <div className="text-right">
@@ -133,12 +135,12 @@ function LeaderboardCard({ entry, isCurrentUser, valueLabel, valueColor, valuePr
             <div className={`text-xs flex items-center justify-end gap-1 ${
               entry.change >= 0 ? 'text-long' : 'text-short'
             }`}>
-              {entry.change >= 0 ? <TrendUp size={12} /> : <TrendDown size={12} />}
+              {entry.change >= 0 ? <TrendUp size={12} weight="duotone" /> : <TrendDown size={12} weight="duotone" />}
               {Math.abs(entry.change)} positions
             </div>
           )}
         </div>
       </div>
-    </Card>
+    </div>
   )
 }

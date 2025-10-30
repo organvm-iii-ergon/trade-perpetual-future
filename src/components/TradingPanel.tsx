@@ -44,45 +44,45 @@ export function TradingPanel({ market, balance, onTrade }: TradingPanelProps) {
   }
 
   return (
-    <Card className="p-6">
+    <div className="glass-strong rounded-3xl p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-xl font-semibold">Trade {market.symbol}</h2>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-foreground/70 font-mono">
             ${market.currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
         </div>
-        <Badge variant="secondary" className="text-xs">
+        <Badge variant="secondary" className="text-xs glass">
           DEMO MODE
         </Badge>
       </div>
 
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-3 mb-6">
         <Button
           variant={selectedSide === 'long' ? 'default' : 'outline'}
           className={cn(
-            'flex-1 gap-2 transition-all',
-            selectedSide === 'long' && 'bg-long text-long-foreground hover:bg-long/90'
+            'flex-1 gap-2 transition-all h-12',
+            selectedSide === 'long' && 'bg-long text-long-foreground hover:bg-long/90 shadow-lg shadow-long/30'
           )}
           onClick={() => setSelectedSide('long')}
         >
-          <TrendUp weight="bold" size={20} />
+          <TrendUp weight="duotone" size={22} />
           LONG
         </Button>
         <Button
           variant={selectedSide === 'short' ? 'default' : 'outline'}
           className={cn(
-            'flex-1 gap-2 transition-all',
-            selectedSide === 'short' && 'bg-short text-short-foreground hover:bg-short/90'
+            'flex-1 gap-2 transition-all h-12',
+            selectedSide === 'short' && 'bg-short text-short-foreground hover:bg-short/90 shadow-lg shadow-short/30'
           )}
           onClick={() => setSelectedSide('short')}
         >
-          <TrendDown weight="bold" size={20} />
+          <TrendDown weight="duotone" size={22} />
           SHORT
         </Button>
       </div>
 
-      <div className="space-y-4 mb-6">
+      <div className="space-y-5 mb-6">
         <div>
           <Label htmlFor="position-size" className="text-sm mb-2 block">
             Position Size (USD)
@@ -95,9 +95,9 @@ export function TradingPanel({ market, balance, onTrade }: TradingPanelProps) {
             onChange={(e) => setSize(e.target.value)}
             step="0.01"
             min="0.01"
-            className="font-mono"
+            className="font-mono glass h-12 text-base"
           />
-          <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+          <div className="flex justify-between mt-2 text-xs text-foreground/60">
             <span>Min: $0.01</span>
             <span>Available: ${balance.toFixed(2)}</span>
           </div>
@@ -106,8 +106,8 @@ export function TradingPanel({ market, balance, onTrade }: TradingPanelProps) {
         <div>
           <div className="flex items-center justify-between mb-2">
             <Label className="text-sm">Leverage</Label>
-            <Badge variant="secondary" className="gap-1 font-mono">
-              <Lightning weight="fill" size={12} />
+            <Badge variant="secondary" className="gap-1 font-mono glass">
+              <Lightning weight="fill" size={14} />
               {leverageNum}x
             </Badge>
           </div>
@@ -119,25 +119,25 @@ export function TradingPanel({ market, balance, onTrade }: TradingPanelProps) {
             step={1}
             className="mb-2"
           />
-          <div className="flex justify-between text-xs text-muted-foreground">
+          <div className="flex justify-between text-xs text-foreground/60">
             <span>1x</span>
             <span>20x</span>
           </div>
         </div>
       </div>
 
-      <div className="bg-muted rounded-lg p-4 space-y-2 mb-6 text-sm">
+      <div className="glass rounded-2xl p-4 space-y-2 mb-6 text-sm border border-white/10">
         <div className="flex justify-between">
-          <span className="text-muted-foreground">Position Value</span>
-          <span className="font-mono">${positionValue.toFixed(2)}</span>
+          <span className="text-foreground/70">Position Value</span>
+          <span className="font-mono font-semibold">${positionValue.toFixed(2)}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-muted-foreground">Collateral</span>
-          <span className="font-mono">${sizeNum.toFixed(2)}</span>
+          <span className="text-foreground/70">Collateral</span>
+          <span className="font-mono font-semibold">${sizeNum.toFixed(2)}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-muted-foreground">Est. Liquidation</span>
-          <span className="font-mono text-destructive">
+          <span className="text-foreground/70">Est. Liquidation</span>
+          <span className="font-mono text-destructive font-semibold">
             ${calculateLiquidationPrice().toFixed(2)}
           </span>
         </div>
@@ -145,21 +145,21 @@ export function TradingPanel({ market, balance, onTrade }: TradingPanelProps) {
 
       <Button
         className={cn(
-          'w-full gap-2 text-base h-12',
-          selectedSide === 'long' && 'bg-long text-long-foreground hover:bg-long/90',
-          selectedSide === 'short' && 'bg-short text-short-foreground hover:bg-short/90'
+          'w-full gap-2 text-base h-14 font-semibold transition-all',
+          selectedSide === 'long' && 'bg-long text-long-foreground hover:bg-long/90 shadow-xl shadow-long/40',
+          selectedSide === 'short' && 'bg-short text-short-foreground hover:bg-short/90 shadow-xl shadow-short/40'
         )}
         disabled={!canTrade}
         onClick={handleTrade}
       >
         {selectedSide === 'long' ? (
           <>
-            <TrendUp weight="bold" size={20} />
+            <TrendUp weight="duotone" size={22} />
             Open Long
           </>
         ) : (
           <>
-            <TrendDown weight="bold" size={20} />
+            <TrendDown weight="duotone" size={22} />
             Open Short
           </>
         )}
@@ -170,6 +170,6 @@ export function TradingPanel({ market, balance, onTrade }: TradingPanelProps) {
           Insufficient balance or invalid position size
         </p>
       )}
-    </Card>
+    </div>
   )
 }
