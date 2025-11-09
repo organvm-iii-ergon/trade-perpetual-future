@@ -27,28 +27,34 @@
   --popover: oklch(0.25 0.06 250);
   --popover-foreground: oklch(0.95 0 0);
   
-  --primary: oklch(0.45 0.15 240);
+  --primary: oklch(0.20 0.08 250);
   --primary-foreground: oklch(1 0 0);
   
-  --secondary: oklch(0.65 0.05 240);
-  --secondary-foreground: oklch(0.15 0.02 250);
+  --secondary: oklch(0.35 0.06 250);
+  --secondary-foreground: oklch(0.95 0 0);
   
   --muted: oklch(0.35 0.06 250);
   --muted-foreground: oklch(0.65 0.04 240);
   
-  --accent: oklch(0.70 0.12 210);
+  --accent: oklch(0.70 0.15 200);
   --accent-foreground: oklch(0.15 0.02 250);
   
-  --destructive: oklch(0.55 0.22 25);
+  --destructive: oklch(0.70 0.25 10);
   --destructive-foreground: oklch(1 0 0);
   
-  --success: oklch(0.65 0.18 145);
-  --success-foreground: oklch(0.15 0.02 250);
+  --long: oklch(0.75 0.22 150);
+  --long-foreground: oklch(0.15 0.02 250);
   
-  --warning: oklch(0.70 0.15 65);
-  --warning-foreground: oklch(0.15 0.02 250);
+  --short: oklch(0.70 0.25 10);
+  --short-foreground: oklch(0.15 0.02 250);
   
-  --ai-purple: oklch(0.60 0.18 290);
+  --amber: oklch(0.75 0.18 70);
+  --amber-foreground: oklch(0.15 0.02 250);
+  
+  --cyan: oklch(0.70 0.15 200);
+  --cyan-foreground: oklch(0.15 0.02 250);
+  
+  --ai-purple: oklch(0.65 0.20 290);
   --ai-purple-foreground: oklch(1 0 0);
   
   --border: oklch(0.35 0.08 245);
@@ -75,10 +81,14 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
-  --color-success: var(--success);
-  --color-success-foreground: var(--success-foreground);
-  --color-warning: var(--warning);
-  --color-warning-foreground: var(--warning-foreground);
+  --color-long: var(--long);
+  --color-long-foreground: var(--long-foreground);
+  --color-short: var(--short);
+  --color-short-foreground: var(--short-foreground);
+  --color-amber: var(--amber);
+  --color-amber-foreground: var(--amber-foreground);
+  --color-cyan: var(--cyan);
+  --color-cyan-foreground: var(--cyan-foreground);
   --color-ai-purple: var(--ai-purple);
   --color-ai-purple-foreground: var(--ai-purple-foreground);
   --color-border: var(--border);
@@ -93,10 +103,43 @@
   --radius-full: 9999px;
 }
 
+.glass {
+  background: rgba(48, 54, 110, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.glass-strong {
+  background: rgba(48, 54, 110, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.glass-hover {
+  transition: all 0.3s ease;
+}
+
+.glass-hover:hover {
+  background: rgba(48, 54, 110, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
 @keyframes slideDown {
   from {
     opacity: 0;
     transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -133,8 +176,30 @@
   }
 }
 
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(-20px) translateX(10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px rgba(112, 168, 255, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(112, 168, 255, 1));
+  }
+}
+
 .animate-slide-down {
   animation: slideDown 0.3s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out;
 }
 
 .animate-pulse-scale {
@@ -147,4 +212,12 @@
 
 .animate-glow-pulse {
   animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
 }

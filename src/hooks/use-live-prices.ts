@@ -19,6 +19,8 @@ export function useLivePrices(initialMarkets: Market[]) {
           const newLow = Math.min(market.low24h, newPrice)
 
           const newPricePoint: PricePoint = {
+            time: Date.now(),
+            price: newPrice,
             timestamp: Date.now(),
             open: market.currentPrice,
             high: Math.max(market.currentPrice, newPrice),

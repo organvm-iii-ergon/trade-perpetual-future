@@ -1,7 +1,7 @@
 import type { Symbol, SentimentData, Reality, HashtagTrend, Alert } from './types'
 
 export async function analyzeSentiment(symbol: string): Promise<SentimentData> {
-  const prompt = window.spark.llmPrompt`Analyze the current market sentiment for ${symbol}. 
+  const prompt = `Analyze the current market sentiment for ${symbol}. 
 Consider recent market conditions, social media buzz, and general trader sentiment.
 Provide a sentiment score from -100 (extremely bearish) to +100 (extremely bullish),
 a confidence level (0-100), and estimated discussion volume (1-100).
@@ -34,7 +34,7 @@ export async function generateRealities(
   currentPrice: number,
   sentiment: SentimentData
 ): Promise<Reality[]> {
-  const prompt = window.spark.llmPrompt`Given the stock/crypto symbol ${symbol} 
+  const prompt = `Given the stock/crypto symbol ${symbol} 
 with current price $${currentPrice} and sentiment score ${sentiment.score} (where -100 is extremely bearish and +100 is extremely bullish),
 generate 4 distinct potential market realities over the next 7 days.
 
@@ -87,7 +87,7 @@ Return as JSON with this structure:
 }
 
 export async function analyzeHashtags(symbol: string): Promise<HashtagTrend[]> {
-  const prompt = window.spark.llmPrompt`Generate 8-10 realistic trending hashtags 
+  const prompt = `Generate 8-10 realistic trending hashtags 
 related to ${symbol} with their current sentiment analysis. Include mix of ticker-specific, 
 market-related, and sentiment hashtags.
 

@@ -25,8 +25,14 @@ export interface Reality {
 }
 
 export interface PricePoint {
-  time: string
+  time: string | number
   price: number
+  timestamp?: number
+  close?: number
+  open?: number
+  high?: number
+  low?: number
+  volume?: number
 }
 
 export interface HashtagTrend {
@@ -46,4 +52,95 @@ export interface Alert {
   message: string
   timestamp: number
   dismissed: boolean
+}
+
+export interface Market {
+  symbol: string
+  name: string
+  currentPrice: number
+  change24h: number
+  volume24h: number
+  openInterest: number
+  fundingRate: number
+  high24h: number
+  low24h: number
+  basePrice: number
+  icon?: string
+  priceHistory: PricePoint[]
+}
+
+export interface Position {
+  id: string
+  symbol: string
+  marketSymbol: string
+  side: 'long' | 'short'
+  size: number
+  leverage: number
+  entryPrice: number
+  currentPrice: number
+  liquidationPrice: number
+  pnl: number
+  pnlPercent: number
+  unrealizedPnl: number
+  unrealizedPnlPercent: number
+  timestamp: number
+}
+
+export interface Game {
+  id: string
+  type: 'dice' | 'coinflip' | 'price-prediction'
+  wager: number
+  creatorId: string
+  opponentId?: string
+  status: 'waiting' | 'active' | 'completed'
+  createdAt: number
+  result?: GameResult
+}
+
+export interface GameResult {
+  winnerId: string
+  outcome: any
+  timestamp: number
+}
+
+export interface User {
+  id: string
+  username: string
+  avatarUrl?: string
+  email?: string
+}
+
+export interface UserProfile {
+  userId: string
+  balance: number
+  totalVolume: number
+  totalPnl: number
+  winRate: number
+  affiliateEarnings: number
+  referralCode: string
+  referredBy?: string
+}
+
+export interface AffiliateStats {
+  referralCode: string
+  totalReferrals: number
+  activeReferrals: number
+  totalEarnings: number
+  totalCommissions: number
+  earningsThisMonth: number
+  lifetimeVolume: number
+  conversionRate: number
+}
+
+export interface LeaderboardEntry {
+  rank: number
+  userId: string
+  username: string
+  totalVolume: number
+  totalPnl: number
+  winRate: number
+  value: number
+  change?: number
+  avatarUrl?: string
+  tier: 'bronze' | 'silver' | 'gold' | 'platinum'
 }
