@@ -6,6 +6,8 @@ import { SignInPage } from '@/components/SignInPage'
 import { CursorParticles } from '@/components/CursorParticles'
 import { DynamicBackground } from '@/components/DynamicBackground'
 import { PersonalizationPanel } from '@/components/PersonalizationPanel'
+import { AchievementsTab } from '@/components/AchievementsTab'
+import { AchievementUnlockNotification } from '@/components/AchievementUnlockNotification'
 import { useMarketBackground } from '@/hooks/use-market-background'
 import { useLivePrices } from '@/hooks/use-live-prices'
 import { useThemePreferences } from '@/hooks/use-theme-preferences'
@@ -18,12 +20,14 @@ import {
   DiceThree, 
   ShareNetwork, 
   Sparkle,
-  Palette 
+  Palette,
+  Trophy 
 } from '@phosphor-icons/react'
-import type { Symbol, Reality, HashtagTrend, Alert, Market, Position, Game, UserProfile } from '@/lib/types'
+import type { Symbol, Reality, HashtagTrend, Alert, Market, Position, Game, UserProfile, Achievement } from '@/lib/types'
 import { analyzeSentiment, generateRealities, analyzeHashtags, checkForAlerts } from '@/lib/sentiment'
 import { generateSeed, rollDice, flipCoin, predictPrice, calculateGamePayout } from '@/lib/game-logic'
 import { generateReferralCode, calculateCommission } from '@/lib/affiliate'
+import { initializeAchievements, checkAchievements } from '@/lib/achievements'
 
 import { SymbolCard } from '@/components/SymbolCard'
 import { RealityCard } from '@/components/RealityCard'
@@ -119,9 +123,13 @@ function App() {
     referredBy: undefined,
   })
   
+  const [achievements, setAchievements] = useKV<Achievement[]>('achievements', initializeAchievements())
+  const [showAchievementNotification, setShowAchievementNotification] = useState<Achievement | null>(null)
+  
   const [isLoadingSentiment, setIsLoadingSentiment] = useState(false)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [particlesEnabled] = useKV<boolean>('particles-enabled', true)
+  const [backgroundIntensity] = useKV<number>('background-intensity', 0.6)
   
   const [marketSentiment, setMarketSentiment] = useState<'bullish' | 'bearish' | 'neutral'>('neutral')
   
@@ -188,6 +196,37 @@ function App() {
       setMarketSentiment('neutral')
     }
   }, [liveMarkets])
+
+  useEffect(() => {
+    if (isSignedIn && (achievements ?? []).length > 0 && currentProfile) {
+      const result = checkAchievements(
+        achievements ?? [],
+        currentProfile,
+        currentPositions,
+        currentGames
+      )
+      
+      if (result.newlyUnlocked.length > 0) {
+        setAchievements(result.achievements)
+        
+        result.newlyUnlocked.forEach((achievement, index) => {
+          setTimeout(() => {
+            setShowAchievementNotification(achievement)
+            
+            if (achievement.reward?.type === 'bonus') {
+              const bonusAmount = Number(achievement.reward.value) || 0
+              setProfile(current => ({
+                ...(current ?? currentProfile),
+                balance: (current?.balance ?? currentProfile.balance) + bonusAmount
+              }))
+            }
+          }, index * 1000)
+        })
+      } else {
+        setAchievements(result.achievements)
+      }
+    }
+  }, [isSignedIn, currentProfile.balance, currentProfile.totalVolume, currentProfile.totalPnl, currentPositions.length, currentGames.length])
 
   useMarketBackground(liveMarkets)
 
@@ -465,9 +504,16 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
-      <DynamicBackground marketSentiment={marketSentiment} intensity={0.6} />
+      <DynamicBackground marketSentiment={marketSentiment} intensity={backgroundIntensity ?? 0.6} />
       {(particlesEnabled ?? true) && <CursorParticles />}
       <Toaster position="top-right" />
+      
+      {showAchievementNotification && (
+        <AchievementUnlockNotification
+          achievement={showAchievementNotification}
+          onDismiss={() => setShowAchievementNotification(null)}
+        />
+      )}
 
       <header className="border-b border-border/50 glass-ultra backdrop-blur-xl sticky top-0 z-50 border-b-white/20">
         <div className="max-w-[1800px] mx-auto px-6 py-4">
@@ -478,7 +524,7 @@ function App() {
                 <h1 className="text-2xl font-bold text-gradient-animated">
                   Bang Perp Exchange
                 </h1>
-                <p className="text-xs text-foreground/60">Social Trading • AI Sentiment • PvP Games • Personalization</p>
+                <p className="text-xs text-foreground/60">Social Trading • AI Sentiment • PvP Games • Achievements</p>
               </div>
             </div>
 
@@ -509,7 +555,7 @@ function App() {
         )}
 
         <Tabs defaultValue="markets" className="space-y-6 relative z-10">
-          <TabsList className="glass-ultra grid w-full grid-cols-7 h-14 p-1 border border-white/20">
+          <TabsList className="glass-ultra grid w-full grid-cols-8 h-14 p-1 border border-white/20">
             <TabsTrigger value="markets" className="gap-2 data-[state=active]:glass-ultra data-[state=active]:text-accent transition-all">
               <TrendUp size={18} weight="duotone" />
               Markets
@@ -529,6 +575,10 @@ function App() {
             <TabsTrigger value="affiliate" className="gap-2 data-[state=active]:glass-ultra data-[state=active]:text-cyan transition-all">
               <ShareNetwork size={18} weight="duotone" />
               Affiliate
+            </TabsTrigger>
+            <TabsTrigger value="achievements" className="gap-2 data-[state=active]:glass-ultra data-[state=active]:text-amber transition-all">
+              <Trophy size={18} weight="duotone" />
+              Achievements
             </TabsTrigger>
             <TabsTrigger value="alerts" className="gap-2 data-[state=active]:glass-ultra data-[state=active]:text-short transition-all">
               <Bell size={18} weight="duotone" />
@@ -743,6 +793,10 @@ function App() {
             </div>
           </TabsContent>
 
+          <TabsContent value="achievements">
+            <AchievementsTab achievements={achievements ?? []} />
+          </TabsContent>
+
           <TabsContent value="alerts">
             <div className="space-y-6">
               <div>
@@ -785,7 +839,7 @@ function App() {
             ⚠️ Demo Mode: All trades and games use virtual currency for educational purposes
           </p>
           <p className="text-xs text-foreground/50">
-            AI-powered sentiment analysis • Real-time market data • Provably fair games • Social trading
+            AI-powered sentiment • Real-time markets • Provably fair games • Achievement system • 7 visual themes
           </p>
         </div>
       </footer>

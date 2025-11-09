@@ -144,3 +144,63 @@ export interface LeaderboardEntry {
   avatarUrl?: string
   tier: 'bronze' | 'silver' | 'gold' | 'platinum'
 }
+
+export interface VisualTheme {
+  id: string
+  name: string
+  description: string
+  colors: {
+    background: string
+    foreground: string
+    card: string
+    cardForeground: string
+    primary: string
+    primaryForeground: string
+    secondary: string
+    secondaryForeground: string
+    accent: string
+    accentForeground: string
+    muted: string
+    mutedForeground: string
+    border: string
+    gradientStart: string
+    gradientMid: string
+    gradientEnd: string
+  }
+}
+
+export interface PersonalizationPreset {
+  id: 'quick' | 'balanced' | 'maximum'
+  name: string
+  description: string
+  settings: {
+    particlesEnabled: boolean
+    particleIntensity: number
+    glassIntensity: number
+    animationSpeed: number
+    backgroundIntensity: number
+  }
+}
+
+export interface Achievement {
+  id: string
+  category: 'trading' | 'gaming' | 'social' | 'milestone'
+  name: string
+  description: string
+  icon: string
+  rarity: 'common' | 'rare' | 'epic' | 'legendary'
+  progress: number
+  target: number
+  unlocked: boolean
+  unlockedAt?: number
+  reward?: {
+    type: 'badge' | 'title' | 'bonus'
+    value: string | number
+  }
+}
+
+export interface UserAchievements {
+  achievements: Achievement[]
+  totalUnlocked: number
+  lastUnlocked?: Achievement
+}
