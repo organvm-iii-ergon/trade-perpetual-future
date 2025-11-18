@@ -1,12 +1,24 @@
+import { useState } from 'react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { DriftClient, User } from '@drift-labs/sdk'
 import TradePanel from './components/TradePanel'
 import RiskWarning from './components/RiskWarning'
+import DashboardPanel from './components/DashboardPanel'
+import PositionPanel from './components/PositionPanel'
 
 function App() {
+  const [driftClient, setDriftClient] = useState<DriftClient | null>(null)
+  const [user, setUser] = useState<User | null>(null)
+
+  const handleDriftClientChange = (client: DriftClient | null, userAccount: User | null) => {
+    setDriftClient(client)
+    setUser(userAccount)
+  }
+
   return (
     <div className="min-h-screen bg-base-200">
       {/* Header */}
-      <div className="navbar bg-base-100 shadow-lg">
+      <div className="navbar bg-base-100 shadow-lg sticky top-0 z-50">
         <div className="flex-1">
           <a className="btn btn-ghost text-2xl font-bold">
             💥 Bang Perp Exchange
@@ -23,7 +35,7 @@ function App() {
         <div className="hero bg-gradient-to-r from-primary to-secondary text-primary-content rounded-2xl mb-8 p-8">
           <div className="hero-content text-center">
             <div className="max-w-md">
-              <h1 className="text-5xl font-bold mb-4 animate-bang">
+              <h1 className="text-5xl font-bold mb-4">
                 💥 BANG! 💥
               </h1>
               <p className="text-xl mb-2">
@@ -39,8 +51,14 @@ function App() {
         {/* Risk Warning */}
         <RiskWarning />
 
+        {/* Dashboard Panel - Shows account stats */}
+        <DashboardPanel user={user} />
+
         {/* Trading Panel */}
-        <TradePanel />
+        <TradePanel onDriftClientChange={handleDriftClientChange} />
+
+        {/* Position Panel - Shows and manages open positions */}
+        <PositionPanel user={user} driftClient={driftClient} />
 
         {/* Footer */}
         <footer className="footer footer-center p-10 text-base-content mt-16">
