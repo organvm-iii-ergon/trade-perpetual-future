@@ -1,7 +1,7 @@
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { useState, useEffect } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+
 import { DriftClient, User } from '@drift-labs/sdk';
 import TradePanel from './components/TradePanel';
 import RiskWarning from './components/RiskWarning';
