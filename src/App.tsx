@@ -1,11 +1,11 @@
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { useState, useEffect } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-
 import { DriftClient, User } from '@drift-labs/sdk';
 import TradePanel from './components/TradePanel';
 import RiskWarning from './components/RiskWarning';
 import PositionPanel from './components/PositionPanel';
+import DashboardPanel from './components/DashboardPanel';
 
 function App() {
   const { connection } = useConnection();
@@ -14,6 +14,7 @@ function App() {
   const [user, setUser] = useState<User | null>(null);
   const [isInitializing, setIsInitializing] = useState(false);
   const [status, setStatus] = useState('');
+  const [markets, setMarkets] = useState<any[]>([]);
 
   useEffect(() => {
     if (publicKey && connection && signTransaction && signAllTransactions && !driftClient) {
@@ -41,6 +42,10 @@ function App() {
 
       await client.subscribe();
       setDriftClient(client);
+
+      const perpMarkets = client.getPerpMarketAccounts();
+      const spotMarkets = client.getSpotMarketAccounts();
+      setMarkets([...perpMarkets, ...spotMarkets]);
 
       const userAccountPublicKey = await client.getUserAccountPublicKey();
       const userAccountExists = await connection.getAccountInfo(userAccountPublicKey);
@@ -105,8 +110,11 @@ function App() {
         {/* Risk Warning */}
         <RiskWarning />
 
+        {/* Dashboard Panel */}
+        <DashboardPanel user={user} />
+
         {/* Trading Panel */}
-        <TradePanel driftClient={driftClient} user={user} isInitializing={isInitializing} status={status} />
+        <TradePanel driftClient={driftClient} user={user} isInitializing={isInitializing} status={status} markets={markets} />
 
         {/* Position Panel */}
         <PositionPanel user={user} driftClient={driftClient} />
