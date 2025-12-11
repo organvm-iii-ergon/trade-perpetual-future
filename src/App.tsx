@@ -1,28 +1,83 @@
-import { useState } from 'react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
-import { DriftClient, User } from '@drift-labs/sdk'
-import TradePanel from './components/TradePanel'
-import RiskWarning from './components/RiskWarning'
-import DashboardPanel from './components/DashboardPanel'
-import PositionPanel from './components/PositionPanel'
-import OrderHistory from './components/OrderHistory'
-import PnLAnalytics from './components/PnLAnalytics'
+import { useState, useEffect } from 'react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { DriftClient, User } from '@drift-labs/sdk';
+import TradePanel from './components/TradePanel';
+import RiskWarning from './components/RiskWarning';
+import PositionPanel from './components/PositionPanel';
+import DashboardPanel from './components/DashboardPanel';
 
 function App() {
-  const [driftClient, setDriftClient] = useState<DriftClient | null>(null)
-  const [user, setUser] = useState<User | null>(null)
-  const [activeTab, setActiveTab] = useState<'trade' | 'positions' | 'orders' | 'analytics'>('trade')
-  const [_termsAccepted, setTermsAccepted] = useState(false)
+  const { connection } = useConnection();
+  const { publicKey, signTransaction, signAllTransactions } = useWallet();
+  const [driftClient, setDriftClient] = useState<DriftClient | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [isInitializing, setIsInitializing] = useState(false);
+  const [status, setStatus] = useState('');
+  const [markets, setMarkets] = useState<any[]>([]);
 
-  const handleDriftClientChange = (client: DriftClient | null, userAccount: User | null) => {
-    setDriftClient(client)
-    setUser(userAccount)
-  }
+  useEffect(() => {
+    if (publicKey && connection && signTransaction && signAllTransactions && !driftClient) {
+      initializeDrift();
+    }
+  }, [publicKey, connection, signTransaction, signAllTransactions]);
+
+  const initializeDrift = async () => {
+    if (!publicKey || !signTransaction || !signAllTransactions) return;
+
+    setIsInitializing(true);
+    setStatus('Initializing Drift Protocol...');
+
+    try {
+      const driftEnv = import.meta.env.VITE_DRIFT_ENV || 'devnet';
+      const client = new DriftClient({
+        connection,
+        wallet: {
+          publicKey,
+          signTransaction,
+          signAllTransactions,
+        },
+        env: driftEnv as 'devnet' | 'mainnet-beta',
+      });
+
+      await client.subscribe();
+      setDriftClient(client);
+
+      const perpMarkets = client.getPerpMarketAccounts();
+      const spotMarkets = client.getSpotMarketAccounts();
+      setMarkets([...perpMarkets, ...spotMarkets]);
+
+      const userAccountPublicKey = await client.getUserAccountPublicKey();
+      const userAccountExists = await connection.getAccountInfo(userAccountPublicKey);
+
+      if (!userAccountExists) {
+        setStatus('⚠️ Drift user account not found. Please create one at drift.trade first.');
+        setIsInitializing(false);
+        return;
+      }
+
+      const driftUser = new User({
+        driftClient: client,
+        userAccountPublicKey,
+      });
+
+      await driftUser.subscribe();
+      setUser(driftUser);
+
+      setStatus('✅ Connected to Drift Protocol!');
+      setTimeout(() => setStatus(''), 3000);
+    } catch (error) {
+      console.error('Error initializing Drift:', error);
+      setStatus(`❌ Error: ${error instanceof Error ? error.message : 'Failed to initialize'}`);
+    } finally {
+      setIsInitializing(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-base-200">
       {/* Header */}
-      <div className="navbar bg-base-100 shadow-lg sticky top-0 z-50">
+      <div className="navbar bg-base-100 shadow-lg">
         <div className="flex-1">
           <a className="btn btn-ghost text-2xl font-bold">
             💥 Bang Perp Exchange
@@ -39,7 +94,7 @@ function App() {
         <div className="hero bg-gradient-to-r from-primary to-secondary text-primary-content rounded-2xl mb-8 p-8">
           <div className="hero-content text-center">
             <div className="max-w-md">
-              <h1 className="text-5xl font-bold mb-4">
+              <h1 className="text-5xl font-bold mb-4 animate-bang">
                 💥 BANG! 💥
               </h1>
               <p className="text-xl mb-2">
@@ -53,62 +108,16 @@ function App() {
         </div>
 
         {/* Risk Warning */}
-        <RiskWarning onAccept={setTermsAccepted} />
+        <RiskWarning />
 
-        {/* Dashboard Panel - Shows account stats */}
+        {/* Dashboard Panel */}
         <DashboardPanel user={user} />
 
-        {/* Tab Navigation */}
-        {user && (
-          <div className="tabs tabs-boxed bg-base-100 shadow-lg mb-4">
-            <a
-              className={`tab tab-lg ${activeTab === 'trade' ? 'tab-active' : ''}`}
-              onClick={() => setActiveTab('trade')}
-            >
-              🎯 Trade
-            </a>
-            <a
-              className={`tab tab-lg ${activeTab === 'positions' ? 'tab-active' : ''}`}
-              onClick={() => setActiveTab('positions')}
-            >
-              📊 Positions
-            </a>
-            <a
-              className={`tab tab-lg ${activeTab === 'orders' ? 'tab-active' : ''}`}
-              onClick={() => setActiveTab('orders')}
-            >
-              📋 Orders
-            </a>
-            <a
-              className={`tab tab-lg ${activeTab === 'analytics' ? 'tab-active' : ''}`}
-              onClick={() => setActiveTab('analytics')}
-            >
-              📈 Analytics
-            </a>
-          </div>
-        )}
+        {/* Trading Panel */}
+        <TradePanel driftClient={driftClient} user={user} isInitializing={isInitializing} status={status} markets={markets} />
 
-        {/* Conditional Rendering Based on Active Tab */}
-        {activeTab === 'trade' && (
-          <TradePanel onDriftClientChange={handleDriftClientChange} />
-        )}
-
-        {activeTab === 'positions' && (
-          <PositionPanel user={user} driftClient={driftClient} />
-        )}
-
-        {activeTab === 'orders' && (
-          <OrderHistory user={user} />
-        )}
-
-        {activeTab === 'analytics' && (
-          <PnLAnalytics user={user} />
-        )}
-
-        {/* Show TradePanel by default if no user connected */}
-        {!user && (
-          <TradePanel onDriftClientChange={handleDriftClientChange} />
-        )}
+        {/* Position Panel */}
+        <PositionPanel user={user} driftClient={driftClient} />
 
         {/* Footer */}
         <footer className="footer footer-center p-10 text-base-content mt-16">
@@ -127,7 +136,7 @@ function App() {
         </footer>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -1,10 +1,6 @@
 import { User, convertToNumber, QUOTE_PRECISION } from '@drift-labs/sdk';
 
-interface DashboardPanelProps {
-  user: User | null;
-}
-
-const DashboardPanel = ({ user }: DashboardPanelProps) => {
+const DashboardPanel = ({ user }: { user: User | null }) => {
   if (!user) {
     return null;
   }
@@ -18,34 +14,24 @@ const DashboardPanel = ({ user }: DashboardPanelProps) => {
     <div className="stats shadow w-full mb-4">
       <div className="stat">
         <div className="stat-title">Total Collateral</div>
-        <div className="stat-value text-primary">
-          ${convertToNumber(totalCollateral, QUOTE_PRECISION).toFixed(2)}
-        </div>
-        <div className="stat-desc">Available funds</div>
+        <div className="stat-value">${convertToNumber(totalCollateral, QUOTE_PRECISION).toFixed(2)}</div>
       </div>
 
       <div className="stat">
         <div className="stat-title">Net USD Value</div>
-        <div className="stat-value text-secondary">
-          ${convertToNumber(netUsdValue, QUOTE_PRECISION).toFixed(2)}
-        </div>
-        <div className="stat-desc">Account value</div>
+        <div className="stat-value">${convertToNumber(netUsdValue, QUOTE_PRECISION).toFixed(2)}</div>
       </div>
 
       <div className="stat">
         <div className="stat-title">Unrealized PNL</div>
         <div className={`stat-value ${unrealizedPnl.isNeg() ? 'text-error' : 'text-success'}`}>
-          ${convertToNumber(unrealizedPnl, QUOTE_PRECISION).toFixed(2)}
-        </div>
-        <div className="stat-desc">
-          {unrealizedPnl.isNeg() ? '📉 Loss' : '📈 Profit'}
+          ${convertToNumber(unrealizedPnl, QUOTE_PRECISION).toFixed(4)}
         </div>
       </div>
 
       <div className="stat">
-        <div className="stat-title">Current Leverage</div>
+        <div className="stat-title">Leverage</div>
         <div className="stat-value">{convertToNumber(leverage, QUOTE_PRECISION).toFixed(2)}x</div>
-        <div className="stat-desc">Active leverage</div>
       </div>
     </div>
   );
