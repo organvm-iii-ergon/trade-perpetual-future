@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { User, PerpPosition, convertToNumber, QUOTE_PRECISION, BASE_PRECISION, DriftClient, PositionDirection, OrderType } from '@drift-labs/sdk';
+import { User, PerpPosition, convertToNumber, QUOTE_PRECISION, BASE_PRECISION, DriftClient, PositionDirection } from '@drift-labs/sdk';
 import { markets } from '../utils/markets';
 
 interface PositionPanelProps {
@@ -46,7 +46,7 @@ const PositionPanel = ({ user, driftClient }: PositionPanelProps) => {
         : PositionDirection.SHORT;
 
       await driftClient.placePerpOrder({
-        orderType: OrderType.MARKET, // Market order
+        orderType: 0, // Market order
         marketIndex: position.marketIndex,
         direction,
         baseAssetAmount: position.baseAssetAmount.abs(),

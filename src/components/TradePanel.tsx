@@ -156,8 +156,8 @@ function TradePanel({ onDriftClientChange }: TradePanelProps) {
 
     try {
       const baseAmount = new BN(parseFloat(amount) * 1_000_000)
-      const leverageMultiplier = Math.floor(parseFloat(leverage))
-      const positionSize = baseAmount.mul(new BN(leverageMultiplier))
+      const leverageMultiplier = parseFloat(leverage)
+      const positionSize = new BN(baseAmount.toNumber() * leverageMultiplier)
       const marketIndex = markets[selectedMarket].marketIndex
 
       let txSig: string
@@ -178,7 +178,7 @@ function TradePanel({ onDriftClientChange }: TradePanelProps) {
           setLoading(false)
           return
         }
-        const limitPriceBN = QUOTE_PRECISION.mul(new BN(Math.floor(parseFloat(limitPrice) * 1_000_000))).div(new BN(1_000_000))
+        const limitPriceBN = new BN(parseFloat(limitPrice) * QUOTE_PRECISION.toNumber())
 
         txSig = await driftClient.placePerpOrder({
           orderType: OrderType.LIMIT,
@@ -194,7 +194,7 @@ function TradePanel({ onDriftClientChange }: TradePanelProps) {
           setLoading(false)
           return
         }
-        const triggerPriceBN = QUOTE_PRECISION.mul(new BN(Math.floor(parseFloat(triggerPrice) * 1_000_000))).div(new BN(1_000_000))
+        const triggerPriceBN = new BN(parseFloat(triggerPrice) * QUOTE_PRECISION.toNumber())
         const triggerCondition = direction === PositionDirection.LONG
           ? OrderTriggerCondition.BELOW
           : OrderTriggerCondition.ABOVE
