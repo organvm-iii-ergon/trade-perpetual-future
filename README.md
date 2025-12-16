@@ -1,32 +1,71 @@
-# 💥 Bang Perp Exchange - Solana Perpetual Trading Platform
+# Sol-Trade-Perpetual_Future_a-Trading-Platform
 
-A meme-style, non-custodial perpetual futures trading website on Solana, powered by Drift Protocol. Users can connect their wallets (Phantom, Solflare) and trade real money through Drift Protocol integration - earning referral fees legally without custodying funds.
+None-Custodial perpetual futures trading website on blockchain, powered by Drift Protocol. Users can connect their wallets (Phantom, Solflare) and trade real money through Drift Protocol integration - earning referral fees legally without custodying funds.
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
 ![Solana](https://img.shields.io/badge/Solana-Devnet-purple)
 ![License](https://img.shields.io/badge/license-MIT-green)
+![Status](https://img.shields.io/badge/status-Production%20Ready-success)
+
+## 🎯 Project Vision & Reference
+
+Bang Perp Exchange is evolving towards a comprehensive perpetual futures trading platform. Our development is guided by the architecture and feature set demonstrated in **[spark/4444JPP/perpetual-future](https://github.com/spark/4444JPP/perpetual-future)**, which serves as our **reference implementation and target state**.
+
+This reference provides:
+- **Architectural guidance** for system design and component structure
+- **Feature roadmap** defining our development priorities
+- **Best practices** for Solana and Drift Protocol integration
+- **Quality standards** we aim to meet or exceed
+
+📍 **See [ROADMAP.md](./ROADMAP.md)** for our complete alignment strategy, gap analysis, and development timeline.
 
 ## 🎯 Features
 
-### Core Features ✅
-- **Solana Wallet Connection** - Support for Phantom and Solflare wallets
-- **Real-Time Perp Trading** - Trade SOL-PERP, BTC-PERP, ETH-PERP markets
-- **Long/Short Positions** - Open leveraged positions (1x-10x)
-- **Drift Protocol Integration** - All trades executed through Drift smart contracts
-- **Non-Custodial Architecture** - Users control their funds and sign all transactions
-- **Meme-Style UI** - Fun, engaging interface with DaisyUI dark theme
-- **Risk Warnings** - Clear Terms of Service and trading risk disclosures
+### 🚀 **NEW v2.0 - Professional Trading Platform!**
 
-### 🚀 New Here?
-**Check out the [⚡ QUICKSTART.md](./QUICKSTART.md) for a 5-minute getting started guide!**
+Bang Perp Exchange has been upgraded to a comprehensive professional trading platform with advanced features:
+
+### Core Features ✅
+- **🔐 Solana Wallet Connection** - Support for Phantom and Solflare wallets
+- **📊 Advanced Order Types** - Market, Limit, and Stop Market orders
+- **⚡ Real-Time Market Data** - Live oracle prices, bid/ask updates every 2 seconds
+- **📈 Position Management** - View and close positions with one click
+- **📋 Order History** - Complete order tracking with status filtering
+- **💰 P&L Analytics** - Comprehensive performance tracking and analytics
+- **🎯 Tab Navigation** - Intuitive interface: Trade | Positions | Orders | Analytics
+- **💼 Account Dashboard** - Real-time collateral, PNL, and leverage tracking
+- **🌐 Multi-Market Support** - SOL-PERP, BTC-PERP, ETH-PERP
+- **📊 1x-10x Leverage** - Flexible leverage control with visual slider
+- **🔒 Non-Custodial** - You control your funds and sign all transactions
+- **🎨 Professional UI** - Clean, modern interface with DaisyUI dark theme
+- **⚠️ Risk Warnings** - Clear Terms of Service and trading risk disclosures
+
+### 🆕 What's New in v2.0
+- ✅ **Limit Orders** - Set your desired entry/exit price
+- ✅ **Stop Market Orders** - Automated risk management with trigger prices
+- ✅ **Real-Time Prices** - Live oracle, bid, and ask prices
+- ✅ **Position Panel** - View all positions and close with one click
+- ✅ **Order History** - Track all orders with filtering (open/filled/cancelled)
+- ✅ **P&L Analytics** - Comprehensive performance dashboard
+- ✅ **Tab Navigation** - Easy switching between Trade, Positions, Orders, Analytics
+- ✅ **Dashboard Stats** - Real-time account statistics display
+- ✅ **Auto-Refresh** - All data updates automatically
+
+### 📚 Documentation
+- **[⚡ QUICKSTART.md](./QUICKSTART.md)** - 5-minute getting started guide
+- **[🚀 FEATURES.md](./FEATURES.md)** - Complete feature documentation
+- **[🏗️ ARCHITECTURE.md](./ARCHITECTURE.md)** - Technical architecture
+- **[🚢 DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Deployment instructions
 
 ### Upcoming Features 🚧
-- Multiple market pairs expansion
-- Position management (close, modify)
-- Portfolio tracking dashboard
+- TradingView chart integration
+- Historical P&L charts
+- Cancel/modify open orders
+- Advanced order types (OCO, Trailing Stop)
+- Export trade history (CSV)
+- Mobile app (React Native)
+- Social trading features
 - Leaderboard system
-- Advanced charting
-- Mobile responsive design improvements
 
 ## 🏗️ Architecture
 
@@ -247,7 +286,14 @@ Before deploying to mainnet:
 
 ## 📚 Resources
 
-### Documentation
+### Project Documentation
+- [ROADMAP.md](./ROADMAP.md) - Project vision, alignment strategy, and development timeline
+- [ARCHITECTURE.md](./ARCHITECTURE.md) - Technical architecture details
+- [QUICKSTART.md](./QUICKSTART.md) - 5-minute getting started guide
+- [CONTRIBUTING.md](./CONTRIBUTING.md) - How to contribute
+
+### External Documentation
+- [spark/4444JPP/perpetual-future](https://github.com/spark/4444JPP/perpetual-future) - Reference implementation (target state)
 - [Drift Protocol Docs](https://docs.drift.trade/)
 - [Drift SDK](https://www.npmjs.com/package/@drift-labs/sdk)
 - [Solana Wallet Adapter](https://github.com/solana-labs/wallet-adapter)
@@ -286,13 +332,27 @@ MIT License - see LICENSE file for details
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please read our contribution guidelines before submitting a Pull Request.
+
+- **[Contributing Guide](./CONTRIBUTING.md)** - Development workflow, code standards, and PR guidelines
+- **[Code of Conduct](./CODE_OF_CONDUCT.md)** - Community standards and expectations
+- **[Security Policy](./SECURITY.md)** - Reporting vulnerabilities and security best practices
+
+### Quick Contribution Steps
 
 1. Fork the project
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+## 📚 Documentation
+
+- **[Documentation Index](./DOCUMENTATION_INDEX.md)** - Complete catalog of all project documentation
+- **[Architecture Guide](./ARCHITECTURE.md)** - Technical architecture deep dive
+- **[Deployment Guide](./DEPLOYMENT_GUIDE.md)** - Deploy to production
+- **[Project Summary](./PROJECT_SUMMARY.md)** - Project status and achievements
+- **[Checklist](./CHECKLIST.md)** - Setup and testing verification
 
 ## 📞 Support
 
@@ -301,8 +361,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-**Status**: 🟢 Active Development  
-**Version**: 1.0.0  
-**Last Updated**: 2025-10-30
+**Status**: 🟢 Production Ready
+**Version**: 2.0.0
+**Last Updated**: 2025-11-18
 
 **Built with ❤️ on Solana**
