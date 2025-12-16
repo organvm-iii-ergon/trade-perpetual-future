@@ -118,7 +118,7 @@ Bang Perp Exchange has been upgraded to a comprehensive professional trading pla
    ```
 
 3. **Configure environment variables**
-   
+
    Create a `.env.local` file in the root directory:
    ```ini
    VITE_RPC_ENDPOINT=https://api.devnet.solana.com
@@ -271,6 +271,12 @@ trading-perpetual-futures/
    ```bash
    vercel
    ```
+
+### Deploy to Netlify
+
+1. Drag-and-drop the `dist` folder in the Netlify UI **or** connect the repository
+2. If connecting the repo, set build command to `npm run build` and publish directory to `dist`
+3. Add environment variables in Site settings → Environment
 
 ### Production Checklist
 

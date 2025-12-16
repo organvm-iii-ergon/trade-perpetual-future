@@ -1,4 +1,4 @@
-import { User, convertToNumber, QUOTE_PRECISION } from '@drift-labs/sdk';
+import { User, convertToNumber, QUOTE_PRECISION } from '@drift-labs/sdk-browser';
 
 const DashboardPanel = ({ user }: { user: User | null }) => {
   if (!user) {

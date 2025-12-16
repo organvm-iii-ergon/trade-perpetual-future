@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { DriftClient, MarketType, PositionDirection, User, BN, convertToNumber, QUOTE_PRECISION, getLimitOrderParams, getTriggerMarketOrderParams, OrderTriggerCondition, OrderType, calculateBidAskPrice } from '@drift-labs/sdk';
+import { DriftClient, MarketType, PositionDirection, User, BN, convertToNumber, QUOTE_PRECISION, getLimitOrderParams, getTriggerMarketOrderParams, OrderTriggerCondition, OrderType, calculateBidAskPrice } from '@drift-labs/sdk-browser';
 
 interface TradePanelProps {
   driftClient: DriftClient | null;
@@ -28,10 +28,10 @@ function TradePanel({ driftClient, user, isInitializing, status: appStatus, mark
     if (driftClient && markets.length > 0) {
       const market = markets[selectedMarket];
       if (!market?.amm) return;
-      
+
       const oracleData = driftClient.getMMOracleDataForPerpMarket(market.marketIndex);
       const [bid, ask] = calculateBidAskPrice(market.amm, oracleData);
-      
+
       setOraclePrice(convertToNumber(oracleData.price, QUOTE_PRECISION).toFixed(2));
       setBidPrice(convertToNumber(bid, QUOTE_PRECISION).toFixed(2));
       setAskPrice(convertToNumber(ask, QUOTE_PRECISION).toFixed(2));

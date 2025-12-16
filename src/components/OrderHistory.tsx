@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { User, Order, convertToNumber, QUOTE_PRECISION, BASE_PRECISION, isVariant, BN } from '@drift-labs/sdk';
+import { User, Order, convertToNumber, QUOTE_PRECISION, BASE_PRECISION, isVariant, BN } from '@drift-labs/sdk-browser';
 import { markets } from '../utils/markets';
 
 interface OrderHistoryProps {

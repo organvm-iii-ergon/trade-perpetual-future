@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { User, PerpPosition, convertToNumber, QUOTE_PRECISION, BASE_PRECISION, DriftClient, PositionDirection, OrderType, BN } from '@drift-labs/sdk';
+import { User, PerpPosition, convertToNumber, QUOTE_PRECISION, BASE_PRECISION, DriftClient, PositionDirection, OrderType, BN } from '@drift-labs/sdk-browser';
 import { markets } from '../utils/markets';
 
 const PositionPanel = ({ user, driftClient }: { user: User | null, driftClient: DriftClient | null }) => {
@@ -88,7 +88,7 @@ const PositionPanel = ({ user, driftClient }: { user: User | null, driftClient: 
                 {positions.map((position) => {
                   const pnl = user.getUnrealizedPNL(true, position.marketIndex);
                   const perpPosition = user.getPerpPosition(position.marketIndex);
-                  const entryPrice = perpPosition && !perpPosition.baseAssetAmount.isZero() 
+                  const entryPrice = perpPosition && !perpPosition.baseAssetAmount.isZero()
                     ? perpPosition.quoteAssetAmount.div(perpPosition.baseAssetAmount)
                     : new BN(0);
 

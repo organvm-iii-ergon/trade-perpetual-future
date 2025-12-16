@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { User, convertToNumber, QUOTE_PRECISION } from '@drift-labs/sdk';
+import { User, convertToNumber, QUOTE_PRECISION } from '@drift-labs/sdk-browser';
 
 interface PnLAnalyticsProps {
   user: User | null;
