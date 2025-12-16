@@ -17,7 +17,7 @@ This reference provides:
 - **Best practices** for Solana and Drift Protocol integration
 - **Quality standards** we aim to meet or exceed
 
-📍 **See [ROADMAP.md](./ROADMAP.md)** for our complete alignment strategy, gap analysis, and development timeline.
+📍 **See [ROADMAP.md](./docs/guides/ROADMAP.md)** for our complete alignment strategy, gap analysis, and development timeline.
 
 ## 🎯 Features
 
@@ -52,10 +52,10 @@ Bang Perp Exchange has been upgraded to a comprehensive professional trading pla
 - ✅ **Auto-Refresh** - All data updates automatically
 
 ### 📚 Documentation
-- **[⚡ QUICKSTART.md](./QUICKSTART.md)** - 5-minute getting started guide
-- **[🚀 FEATURES.md](./FEATURES.md)** - Complete feature documentation
-- **[🏗️ ARCHITECTURE.md](./ARCHITECTURE.md)** - Technical architecture
-- **[🚢 DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Deployment instructions
+- **[⚡ QUICKSTART.md](./docs/guides/QUICKSTART.md)** - 5-minute getting started guide
+- **[🚀 FEATURES.md](./docs/guides/FEATURES.md)** - Complete feature documentation
+- **[🏗️ ARCHITECTURE.md](./docs/guides/ARCHITECTURE.md)** - Technical architecture
+- **[🚢 DEPLOYMENT_GUIDE.md](./docs/guides/DEPLOYMENT_GUIDE.md)** - Deployment instructions
 
 ### Upcoming Features 🚧
 - TradingView chart integration
@@ -293,9 +293,9 @@ Before deploying to mainnet:
 ## 📚 Resources
 
 ### Project Documentation
-- [ROADMAP.md](./ROADMAP.md) - Project vision, alignment strategy, and development timeline
-- [ARCHITECTURE.md](./ARCHITECTURE.md) - Technical architecture details
-- [QUICKSTART.md](./QUICKSTART.md) - 5-minute getting started guide
+- [ROADMAP.md](./docs/guides/ROADMAP.md) - Project vision, alignment strategy, and development timeline
+- [ARCHITECTURE.md](./docs/guides/ARCHITECTURE.md) - Technical architecture details
+- [QUICKSTART.md](./docs/guides/QUICKSTART.md) - 5-minute getting started guide
 - [CONTRIBUTING.md](./CONTRIBUTING.md) - How to contribute
 
 ### External Documentation
