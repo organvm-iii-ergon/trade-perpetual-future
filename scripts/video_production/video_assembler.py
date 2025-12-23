@@ -355,8 +355,12 @@ class VideoAssembler:
                     # Use absolute paths to avoid shell metacharacter issues
                     abs_path = str(Path(video_file).absolute())
                     # Escape for FFmpeg's concat demuxer (not shell)
-                    # FFmpeg concat requires escaping: ', \, and newlines
-                    escaped_path = abs_path.replace("'", r"\'").replace("\\", r"\\")
+                    # FFmpeg concat requires escaping: ', \, newlines, and #
+                    escaped_path = (abs_path
+                                    .replace("\\", r"\\")  # Backslashes first
+                                    .replace("'", r"\'")   # Single quotes
+                                    .replace("\n", r"\n")  # Newlines
+                                    .replace("#", r"\#"))  # Hash (comment char)
                     f.write(f"file '{escaped_path}'\n")
             
             cmd = [

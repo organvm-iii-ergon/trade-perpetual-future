@@ -15,6 +15,10 @@ logger = logging.getLogger(__name__)
 class ScriptParser:
     """Parses scripts and extracts scene structure."""
     
+    # Shared constants
+    VISUAL_CUE_PATTERN = r'\[(?:ON SCREEN|VISUAL|SHOT\s+[A-Za-z0-9]+):\s*([^\]]+)\]'
+    DEFAULT_HEADING = "Scene {scene_num}"
+    
     def __init__(self, script_path: str):
         """
         Initialize the parser.
@@ -163,7 +167,7 @@ class ScriptParser:
                             "scene_num": scene_num,
                             "start_time": None,
                             "end_time": None,
-                            "heading": f"Scene {scene_num}",
+                            "heading": self.DEFAULT_HEADING.format(scene_num=scene_num),
                             "content": narration,
                             "visuals": visuals
                         })
@@ -175,9 +179,7 @@ class ScriptParser:
     
     def _extract_visual_cues(self, text: str) -> List[str]:
         """Extract visual cues like [ON SCREEN:], [VISUAL:], [SHOT X:], etc."""
-        # More flexible pattern to handle various shot numbering styles
-        visual_pattern = r'\[(?:ON SCREEN|VISUAL|SHOT\s+[A-Za-z0-9]+):\s*([^\]]+)\]'
-        matches = re.findall(visual_pattern, text, re.IGNORECASE)
+        matches = re.findall(self.VISUAL_CUE_PATTERN, text, re.IGNORECASE)
         return [m.strip() for m in matches]
     
     def _extract_narration(self, text: str) -> str:
@@ -185,8 +187,8 @@ class ScriptParser:
         Extract narration text, removing visual cues and markdown.
         Preserves quoted speech indicated by > markers.
         """
-        # Remove visual cues (using same flexible pattern as _extract_visual_cues)
-        text = re.sub(r'\[(?:ON SCREEN|VISUAL|SHOT\s+[A-Za-z0-9]+):[^\]]+\]', '', text, flags=re.IGNORECASE)
+        # Remove visual cues (using shared pattern constant)
+        text = re.sub(self.VISUAL_CUE_PATTERN, '', text, flags=re.IGNORECASE)
         
         # Extract quoted narration (lines starting with >)
         lines = text.split('\n')

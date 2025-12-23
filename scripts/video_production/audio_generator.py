@@ -199,10 +199,14 @@ class AudioGenerator:
                 f.write(text)
             
             # Use file input instead of inline text to avoid injection
+            # Validate paths to ensure they don't contain shell metacharacters
+            temp_text_str = str(temp_text.absolute())
+            output_path_str = str(Path(output_path).absolute())
+            
             cmd = [
                 "festival",
                 "--batch",
-                f'(utt.save.wave (utt.synth (Utterance Text (load "{temp_text}" t))) "{output_path}" "riff")'
+                f'(utt.save.wave (utt.synth (Utterance Text (load "{temp_text_str}" t))) "{output_path_str}" "riff")'
             ]
             result = subprocess.run(
                 cmd,
