@@ -278,6 +278,10 @@ class VisualGenerator:
         """
         output_file = self.output_dir / f"{script_name}_scene{scene_num:02d}_title.png"
         
+        # Handle None or empty heading
+        if not heading:
+            heading = f"Scene {scene_num}"
+        
         try:
             from PIL import Image, ImageDraw, ImageFont
         except ImportError:
