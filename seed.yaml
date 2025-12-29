@@ -1,62 +1,26 @@
 version: 1
-
 project:
-  name: "trade-perpetual-future"
-  codename: "bang-perp-exchange"
-  description: "Non-custodial perpetual futures trading platform on Solana."
+  name: trade-perpetual-future
+  description: Auto-generated seed. Waiting for human intent.
   owners:
-    - handle: "ivviiviivvi"
-      role: "lead-developer"
+  - handle: labores-profani-crux
+    role: steward
   repo:
-    monorepo: false
-    package_manager: "npm"
-    type: "dapp"
-
-domain:
-  problem_statement: >
-    Provide a decentralized, trustless interface for trading perpetual futures
-    via Drift Protocol, minimizing user friction and custody risk.
-  personas:
-    - id: "trader"
-      description: "Crypto-native user managing leverage positions."
-    - id: "builder"
-      description: "Affiliate earning fees via Drift Builder Code."
-
+    org: labores-profani-crux
+    type: node
+    role: commercial/product
 architecture:
-  style: "web3-dapp"
   tech_stack:
-    frontend:
-      - "React 18"
-      - "Vite"
-      - "TailwindCSS"
-      - "DaisyUI"
-    blockchain:
-      - "Solana"
-      - "Drift Protocol SDK"
-    wallet:
-      - "Solana Wallet Adapter (Phantom, Solflare)"
-
-coding_standards:
-  language: "TypeScript"
-  style:
-    formatter: "prettier"
-    linter: "eslint"
-
-growth_objectives:
-  roadmap_epics:
-    - id: "trade-v2"
-      title: "Professional Trading UI"
-      description: "Advanced order types, P&L charts, and position management."
-      modules: ["src/components/trading/TradePanel.tsx"]
-    - id: "security-v1"
-      title: "Dependency Hardening"
-      description: "Audit and lock dependencies to prevent supply chain attacks."
-      modules: ["package.json"]
-
+  - node
+  - typescript
 automation_contract:
   ai_access:
-    read_paths: ["src/**", "docs/**"]
-    write_paths: ["src/**", "tests/**"]
-    disallowed_writes: [".env.local", "package-lock.json", "tsconfig.json"]
-  task_labels:
-    auto_managed_labels: ["ai-task", "security-audit"]
+    read_paths:
+    - '**/*'
+    write_paths:
+    - src/**
+    - docs/**
+    - tests/**
+    disallowed_writes:
+    - .github/workflows/**
+    - seed.yaml
