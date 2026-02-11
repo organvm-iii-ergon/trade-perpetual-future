@@ -428,7 +428,7 @@ This repository operates within the [organvm](https://github.com/meta-organvm) e
 
 | Relationship | Organ | Repository | Connection |
 |-------------|-------|-----------|------------|
-| **Theory** | [ORGAN-I: Theoria](https://github.com/organvm-i-theoria) | [recursive-engine](https://github.com/organvm-i-theoria/recursive-engine) | The epistemological framework that governs how systems observe and refine themselves. `trade-perpetual-future` embodies recursive product design: a thin client that delegates complexity to protocol-level primitives, then iterates on the interface layer. |
+| **Theory** | [ORGAN-I: Theoria](https://github.com/organvm-i-theoria) | [recursive-engine](https://github.com/organvm-i-theoria/recursive-engine--generative-entity) | The epistemological framework that governs how systems observe and refine themselves. `trade-perpetual-future` embodies recursive product design: a thin client that delegates complexity to protocol-level primitives, then iterates on the interface layer. |
 | **Orchestration** | [ORGAN-IV: Taxis](https://github.com/organvm-iv-taxis) | [agentic-titan](https://github.com/organvm-iv-taxis/agentic-titan) | The governance and routing layer for agent-driven workflows. The non-custodial architecture pattern demonstrated here — delegating execution to audited external systems while retaining control of the interface — is the same pattern `agentic-titan` applies to AI agent orchestration. |
 | **Public Process** | [ORGAN-V: Logos](https://github.com/organvm-v-logos) | [public-process](https://github.com/organvm-v-logos/public-process) | The building-in-public narrative layer. Development decisions, architectural trade-offs, and revenue model analysis from this project feed into ORGAN-V essays. |
 
