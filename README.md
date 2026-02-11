@@ -6,6 +6,14 @@
 
 # trade-perpetual-future
 
+[![CI](https://github.com/organvm-iii-ergon/trade-perpetual-future/actions/workflows/ci.yml/badge.svg)](https://github.com/organvm-iii-ergon/trade-perpetual-future/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-pending-lightgrey)](https://github.com/organvm-iii-ergon/trade-perpetual-future)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/organvm-iii-ergon/trade-perpetual-future/blob/main/LICENSE)
+[![Organ III](https://img.shields.io/badge/Organ-III%20Ergon-F59E0B)](https://github.com/organvm-iii-ergon)
+[![Status](https://img.shields.io/badge/status-active-brightgreen)](https://github.com/organvm-iii-ergon/trade-perpetual-future)
+[![TS+Python](https://img.shields.io/badge/lang-TS%2BPython-informational)](https://github.com/organvm-iii-ergon/trade-perpetual-future)
+
+
 **A non-custodial perpetual futures trading platform on Solana, powered by Drift Protocol.**
 
 Users connect browser wallets (Phantom, Solflare) and trade leveraged perpetual contracts (SOL-PERP, BTC-PERP, ETH-PERP) directly against Drift Protocol smart contracts. The platform never touches user funds. Revenue accrues through Drift's on-chain Builder Code referral system — a compliant, zero-custody affiliate model where 10-15% of trading fees are paid automatically to the platform operator.
