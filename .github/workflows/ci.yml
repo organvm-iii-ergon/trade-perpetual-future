@@ -59,7 +59,7 @@ jobs:
 
       - name: Upload Python coverage
         if: steps.detect-py.outputs.has-python == 'true' && hashFiles('coverage.xml') != ''
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           file: ./coverage.xml
           flags: python
@@ -105,7 +105,7 @@ jobs:
 
       - name: Upload TypeScript coverage
         if: steps.detect-node.outputs.has-node == 'true' && hashFiles('coverage/lcov.info') != ''
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           files: ./coverage/lcov.info
           flags: typescript
