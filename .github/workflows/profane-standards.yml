@@ -11,7 +11,7 @@ jobs:
     name: 🛡️ Quality Gate
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
       
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -32,7 +32,7 @@ jobs:
     name: 🔒 Security Audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
       - uses: actions/setup-node@v6
         with:
           node-version: '20'
@@ -44,7 +44,7 @@ jobs:
     needs: [quality, security]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
       - uses: actions/setup-node@v6
         with:
           node-version: '20'
