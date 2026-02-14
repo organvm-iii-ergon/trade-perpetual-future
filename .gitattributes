@@ -1,0 +1,2 @@
+# Override global LFS tracking for small SVGs in this repo
+*.svg !filter !diff !merge text

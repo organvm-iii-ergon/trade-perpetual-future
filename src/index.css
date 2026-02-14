@@ -1,40 +1,296 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "daisyui";
 
+/* ============================================================
+   DaisyUI theme configuration
+   ============================================================ */
+@plugin "daisyui" {
+  themes: dark, cupcake;
+}
+
+/* ============================================================
+   Base styles
+   ============================================================ */
+@layer base {
+  * {
+    @apply border-base-300;
+  }
+
+  :root {
+    font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    color-scheme: dark;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .font-mono {
+    font-family: 'IBM Plex Mono', monospace;
+    font-feature-settings: 'tnum';
+  }
+}
+
+/* ============================================================
+   Custom color tokens (trading & accent colors)
+   ============================================================ */
+@theme {
+  --color-long: oklch(0.75 0.22 150);
+  --color-long-foreground: oklch(0.15 0.02 250);
+  --color-short: oklch(0.70 0.25 10);
+  --color-short-foreground: oklch(0.15 0.02 250);
+  --color-amber: oklch(0.75 0.18 70);
+  --color-amber-foreground: oklch(0.15 0.02 250);
+  --color-cyan: oklch(0.70 0.15 200);
+  --color-cyan-foreground: oklch(0.15 0.02 250);
+  --color-ai-purple: oklch(0.65 0.20 290);
+  --color-ai-purple-foreground: oklch(1 0 0);
+  --color-magenta: oklch(0.68 0.22 330);
+  --color-magenta-foreground: oklch(1 0 0);
+  --color-orange: oklch(0.72 0.20 50);
+  --color-orange-foreground: oklch(0.15 0.02 250);
+}
+
+/* Gradient variables */
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: dark;
-  
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --gradient-start: oklch(0.20 0.08 250);
+  --gradient-mid: oklch(0.40 0.12 280);
+  --gradient-end: oklch(0.30 0.10 200);
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
+/* ============================================================
+   Glassmorphism system
+   ============================================================ */
+.glass {
+  background: rgba(48, 54, 110, 0.25);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
 }
 
-/* Custom animations for meme-style */
+.glass-strong {
+  background: rgba(48, 54, 110, 0.45);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+}
+
+.glass-ultra {
+  background: rgba(48, 54, 110, 0.65);
+  backdrop-filter: blur(32px) saturate(220%);
+  -webkit-backdrop-filter: blur(32px) saturate(220%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 48px 0 rgba(31, 38, 135, 0.35);
+}
+
+.glass-hover {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-hover:hover {
+  background: rgba(48, 54, 110, 0.65);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 16px 48px rgba(112, 168, 255, 0.25), 0 0 80px rgba(112, 168, 255, 0.1);
+  border: 1px solid rgba(112, 168, 255, 0.3);
+}
+
+.glass-interactive {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+.glass-interactive:hover {
+  background: rgba(48, 54, 110, 0.55);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(112, 168, 255, 0.2);
+}
+.glass-interactive:active {
+  transform: translateY(0px);
+  box-shadow: 0 4px 16px rgba(112, 168, 255, 0.15);
+}
+
+/* ============================================================
+   Glow & shine effects
+   ============================================================ */
+.glass-glow {
+  position: relative;
+}
+.glass-glow::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(45deg,
+    rgba(112, 168, 255, 0.3),
+    rgba(168, 112, 255, 0.3),
+    rgba(255, 112, 168, 0.3),
+    rgba(112, 168, 255, 0.3)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.glass-glow:hover::before {
+  opacity: 1;
+}
+
+.shine-effect {
+  position: relative;
+  overflow: hidden;
+}
+.shine-effect::after {
+  content: '';
+  position: absolute;
+  top: -50%; right: -50%; bottom: -50%; left: -50%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
+  transform: rotate(45deg) translate(-100%, -100%);
+  transition: transform 0.6s ease;
+}
+.shine-effect:hover::after {
+  transform: rotate(45deg) translate(100%, 100%);
+}
+
+/* ============================================================
+   Gradient text
+   ============================================================ */
+.text-gradient {
+  background: linear-gradient(135deg, oklch(0.70 0.15 200), oklch(0.65 0.20 290), oklch(0.70 0.15 200));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-animated {
+  background: linear-gradient(90deg, oklch(0.70 0.15 200), oklch(0.65 0.20 290), oklch(0.70 0.15 200), oklch(0.70 0.15 200));
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 4s ease infinite;
+}
+
+.gradient-animated {
+  background: linear-gradient(-45deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end), var(--gradient-start));
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+/* ============================================================
+   3D & perspective
+   ============================================================ */
+.perspective-container {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card-3d:hover {
+  transform: rotateY(5deg) rotateX(-5deg) translateZ(20px);
+}
+
+/* ============================================================
+   Keyframe animations
+   ============================================================ */
 @keyframes bang {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.05); }
 }
-
-.animate-bang {
-  animation: bang 0.3s ease-in-out;
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-scale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+@keyframes fade-in-stagger {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(112, 168, 255, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(112, 168, 255, 0.7); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-20px) translateX(10px); }
+}
+@keyframes pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 10px rgba(112, 168, 255, 0.5)); }
+  50% { filter: drop-shadow(0 0 24px rgba(112, 168, 255, 1)); }
+}
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes morph {
+  0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+}
+@keyframes ripple {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
+}
+@keyframes bounce-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes rotate-colors {
+  0%, 100% { filter: hue-rotate(0deg); }
+  50% { filter: hue-rotate(45deg); }
 }
 
-/* Wallet adapter button custom styles */
+/* ============================================================
+   Animation utility classes
+   ============================================================ */
+.animate-bang { animation: bang 0.3s ease-in-out; }
+.animate-slide-down { animation: slideDown 0.3s ease-out; }
+.animate-slide-up { animation: slideUp 0.5s ease-out; }
+.animate-pulse-scale { animation: pulse-scale 0.3s ease-in-out; }
+.animate-fade-in-stagger { animation: fade-in-stagger 0.4s ease-out; }
+.animate-glow-pulse { animation: glow-pulse 2s ease-in-out infinite; }
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+.animate-gradient-shift { animation: gradient-shift 8s ease infinite; background-size: 200% 200%; }
+.animate-shimmer { animation: shimmer 3s linear infinite; background-size: 200% 100%; }
+.animate-morph { animation: morph 10s ease-in-out infinite; }
+.animate-ripple { animation: ripple 1s ease-out; }
+.animate-bounce-subtle { animation: bounce-subtle 2s ease-in-out infinite; }
+.animate-spin-slow { animation: spin-slow 20s linear infinite; }
+.animate-rotate-colors { animation: rotate-colors 6s ease-in-out infinite; }
+
+/* ============================================================
+   Wallet adapter overrides
+   ============================================================ */
 .wallet-adapter-button {
   @apply btn btn-primary;
 }
-
 .wallet-adapter-button-trigger {
   @apply btn btn-primary;
 }
