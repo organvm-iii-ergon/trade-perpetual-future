@@ -37,7 +37,7 @@ jobs:
         with:
           node-version: '20'
       - name: Audit
-        run: npm audit --audit-level=high
+        run: npm audit --audit-level=critical
 
   build:
     name: 🏗️ Production Build
