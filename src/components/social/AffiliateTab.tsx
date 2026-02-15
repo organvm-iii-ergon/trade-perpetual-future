@@ -98,27 +98,29 @@ export function AffiliateTab({ profile, stats }: AffiliateTabProps) {
             Your Referral Link
           </h3>
 
-          <div className="flex gap-2 mt-3">
+          <div className="flex flex-col sm:flex-row gap-2 mt-3">
             <input
               type="text"
               className="input input-bordered flex-1 text-sm font-mono"
               value={referralLink}
               readOnly
             />
-            <button
-              className={cn(
-                'btn',
-                copied ? 'btn-success' : 'btn-primary'
-              )}
-              onClick={handleCopy}
-            >
-              <Copy className="h-4 w-4" />
-              {copied ? 'Copied!' : 'Copy'}
-            </button>
-            <button className="btn btn-secondary" onClick={handleShare}>
-              <Share2 className="h-4 w-4" />
-              Share
-            </button>
+            <div className="flex gap-2">
+              <button
+                className={cn(
+                  'btn flex-1 sm:flex-none',
+                  copied ? 'btn-success' : 'btn-primary'
+                )}
+                onClick={handleCopy}
+              >
+                <Copy className="h-4 w-4" />
+                {copied ? 'Copied!' : 'Copy'}
+              </button>
+              <button className="btn btn-secondary flex-1 sm:flex-none" onClick={handleShare}>
+                <Share2 className="h-4 w-4" />
+                Share
+              </button>
+            </div>
           </div>
 
           <div className="mt-2">

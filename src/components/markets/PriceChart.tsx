@@ -37,7 +37,7 @@ export function PriceChart({ market, isSelected, onClick }: PriceChartProps) {
               </div>
             }
           >
-            <div className="font-mono text-3xl font-bold cursor-help">
+            <div className="font-mono text-xl sm:text-3xl font-bold cursor-help">
               ${market.currentPrice.toFixed(2)}
             </div>
           </GlassTooltip>

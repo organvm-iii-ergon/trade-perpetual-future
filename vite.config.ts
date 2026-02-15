@@ -28,5 +28,16 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'drift-sdk': ['@drift-labs/sdk-browser'],
+          'solana': ['@solana/web3.js', '@solana/wallet-adapter-react', '@solana/wallet-adapter-react-ui', '@solana/wallet-adapter-wallets', '@solana/wallet-adapter-base'],
+          'charts': ['recharts', 'd3'],
+          'animation': ['framer-motion'],
+          'react-vendor': ['react', 'react-dom'],
+        },
+      },
+    },
   },
 })

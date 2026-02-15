@@ -286,6 +286,18 @@
 .animate-rotate-colors { animation: rotate-colors 6s ease-in-out infinite; }
 
 /* ============================================================
+   Mobile touch targets
+   ============================================================ */
+@media (max-width: 767px) {
+  .btn {
+    min-height: 44px;
+  }
+  .tab {
+    min-height: 44px;
+  }
+}
+
+/* ============================================================
    Wallet adapter overrides
    ============================================================ */
 .wallet-adapter-button {

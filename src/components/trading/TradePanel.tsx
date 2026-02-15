@@ -134,7 +134,7 @@ function TradePanel({ driftClient, user, isInitializing, status: appStatus, mark
               </select>
             </div>
 
-            <div className="stats shadow w-full my-4">
+            <div className="stats stats-vertical sm:stats-horizontal shadow w-full my-4">
               <div className="stat">
                 <div className="stat-title">Oracle Price</div>
                 <div className="stat-value text-sm">${oraclePrice}</div>
@@ -276,7 +276,7 @@ function TradePanel({ driftClient, user, isInitializing, status: appStatus, mark
             )}
 
             {amount && leverage && (
-              <div className="stats shadow mt-4">
+              <div className="stats stats-vertical sm:stats-horizontal shadow mt-4">
                 <div className="stat">
                   <div className="stat-title">Position Size</div>
                   <div className="stat-value text-sm">

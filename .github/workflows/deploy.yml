@@ -1,57 +1,76 @@
-name: Deploy to GitHub Pages
+name: Deploy to Cloudflare
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
-      - name: Install dependencies
-        run: npm ci
-      
+
+      - run: npm ci
+      - run: npm run test:run
+
+  build-and-deploy-pages:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
       - name: Build
         run: npm run build
         env:
-          VITE_RPC_ENDPOINT: ${{ secrets.VITE_RPC_ENDPOINT }}
-          VITE_DRIFT_ENV: ${{ secrets.VITE_DRIFT_ENV }}
-          VITE_DRIFT_BUILDER_CODE: ${{ secrets.VITE_DRIFT_BUILDER_CODE }}
-      
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-      
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+          VITE_RPC_ENDPOINT: ${{ vars.VITE_RPC_ENDPOINT }}
+          VITE_DRIFT_ENV: ${{ vars.VITE_DRIFT_ENV }}
+          VITE_API_BASE: ${{ vars.VITE_API_BASE }}
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
         with:
-          path: './dist'
-  
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=bang-perp-exchange --branch=main
+
+  deploy-worker:
+    needs: test
     runs-on: ubuntu-latest
-    needs: build
+    defaults:
+      run:
+        working-directory: workers/api
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: workers/api/package-lock.json
+
+      - run: npm ci
+
+      - name: Deploy Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: workers/api
+          command: deploy

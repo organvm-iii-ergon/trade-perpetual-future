@@ -1,4 +1,8 @@
-import type { UserProfile } from '@/types'
+import type { UserProfile, AffiliateStats } from '@/types'
+
+const API_BASE = import.meta.env.VITE_API_BASE || ''
+
+// ─── Pure functions (unchanged) ──────────────────────────────────
 
 export function generateReferralCode(userId: string): string {
   const hash = userId.split('').reduce((acc, char) => {
@@ -36,5 +40,78 @@ export function getTierIcon(tier: string): string {
     case 'gold': return '👑'
     case 'silver': return '⭐'
     default: return '🥉'
+  }
+}
+
+// ─── API-backed functions ────────────────────────────────────────
+
+export async function registerAffiliate(
+  walletAddress: string,
+  referredBy?: string,
+): Promise<AffiliateStats | null> {
+  if (!API_BASE) return null
+
+  try {
+    const res = await fetch(`${API_BASE}/api/affiliate/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Wallet-Address': walletAddress,
+      },
+      body: JSON.stringify({ walletAddress, referredBy }),
+    })
+    if (res.ok) {
+      const data = await res.json()
+      return {
+        referralCode: data.referralCode,
+        totalReferrals: data.stats?.totalReferrals ?? 0,
+        activeReferrals: data.stats?.activeReferrals ?? 0,
+        totalEarnings: data.stats?.totalEarnings ?? 0,
+        totalCommissions: data.stats?.totalCommissions ?? 0,
+        earningsThisMonth: data.stats?.earningsThisMonth ?? 0,
+        lifetimeVolume: data.stats?.lifetimeVolume ?? 0,
+        conversionRate: data.stats?.conversionRate ?? 0,
+      }
+    }
+  } catch {
+    // fall through
+  }
+  return null
+}
+
+export async function getAffiliateStats(walletAddress: string): Promise<AffiliateStats | null> {
+  if (!API_BASE) return null
+
+  try {
+    const res = await fetch(`${API_BASE}/api/affiliate/stats/${encodeURIComponent(walletAddress)}`, {
+      headers: { 'X-Wallet-Address': walletAddress },
+    })
+    if (res.ok) return await res.json()
+  } catch {
+    // fall through
+  }
+  return null
+}
+
+export async function trackTrade(
+  walletAddress: string,
+  volume: number,
+  fee: number,
+  txSignature: string,
+): Promise<boolean> {
+  if (!API_BASE) return false
+
+  try {
+    const res = await fetch(`${API_BASE}/api/affiliate/track-trade`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Wallet-Address': walletAddress,
+      },
+      body: JSON.stringify({ walletAddress, volume, fee, txSignature }),
+    })
+    return res.ok
+  } catch {
+    return false
   }
 }

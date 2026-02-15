@@ -65,6 +65,8 @@ interface GamesTabProps {
   totalWinnings: number
   winRate: number
   currentStreak: number
+  gameMode?: 'local' | 'on-chain'
+  onModeChange?: (mode: 'local' | 'on-chain') => void
 }
 
 // ─── Sub-components ────────────────────────────────────────────────
@@ -542,6 +544,8 @@ export function GamesTab({
   totalWinnings,
   winRate,
   currentStreak,
+  gameMode = 'local',
+  onModeChange,
 }: GamesTabProps) {
   const [activeTab, setActiveTab] = useState<GameType>('dice')
   const [isCreating, setIsCreating] = useState(false)
@@ -664,6 +668,35 @@ export function GamesTab({
           color={currentStreak >= 3 ? 'text-amber' : 'text-base-content'}
         />
       </div>
+
+      {/* Mode toggle */}
+      {onModeChange && (
+        <div className="flex items-center justify-between card bg-base-200 glass p-3">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-base-content/70">Mode</span>
+            <span className={cn(
+              'badge badge-sm',
+              gameMode === 'on-chain' ? 'badge-success' : 'badge-ghost'
+            )}>
+              {gameMode === 'on-chain' ? 'On-Chain' : 'Local'}
+            </span>
+          </div>
+          <div className="join">
+            <button
+              className={cn('btn btn-sm join-item', gameMode === 'local' && 'btn-active')}
+              onClick={() => onModeChange('local')}
+            >
+              Local
+            </button>
+            <button
+              className={cn('btn btn-sm join-item', gameMode === 'on-chain' && 'btn-active')}
+              onClick={() => onModeChange('on-chain')}
+            >
+              On-Chain
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Game type tabs */}
       <div role="tablist" className="tabs tabs-boxed bg-base-300/50 p-1">

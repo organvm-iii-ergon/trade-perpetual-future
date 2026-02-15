@@ -94,9 +94,13 @@ export interface Game {
   wager: number
   creatorId: string
   opponentId?: string
-  status: 'waiting' | 'active' | 'completed'
+  status: 'waiting' | 'active' | 'completed' | 'cancelled'
   createdAt: number
   result?: GameResult
+  mode?: 'local' | 'on-chain'
+  txSignature?: string
+  escrowAddress?: string
+  vrfProof?: string
 }
 
 export interface GameResult {

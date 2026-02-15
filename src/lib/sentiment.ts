@@ -1,5 +1,7 @@
 import type { SentimentData, Reality, HashtagTrend, Alert } from '@/types'
 
+const API_BASE = import.meta.env.VITE_API_BASE || ''
+
 /** Simple hash for deterministic pseudo-random values per symbol */
 function hashCode(s: string): number {
   let h = 0
@@ -15,8 +17,9 @@ function seededRandom(seed: number): () => number {
   }
 }
 
-export async function analyzeSentiment(symbol: string): Promise<SentimentData> {
-  // Simulated sentiment — seeded by symbol + hour for slow drift
+// ─── Local PRNG fallbacks ────────────────────────────────────────
+
+export function analyzeSentimentLocal(symbol: string): SentimentData {
   const hourSeed = hashCode(symbol) + Math.floor(Date.now() / 3_600_000)
   const rng = seededRandom(hourSeed)
 
@@ -35,11 +38,11 @@ export async function analyzeSentiment(symbol: string): Promise<SentimentData> {
   return { score, label, confidence, volume, trend, lastUpdated: Date.now() }
 }
 
-export async function generateRealities(
+export function generateRealitiesLocal(
   symbol: string,
   currentPrice: number,
   sentiment: SentimentData
-): Promise<Reality[]> {
+): Reality[] {
   const seed = hashCode(symbol + String(Math.floor(Date.now() / 3_600_000)))
   const rng = seededRandom(seed)
 
@@ -57,11 +60,9 @@ export async function generateRealities(
     'oklch(0.60 0.18 290)',
   ]
 
-  // Distribute probability with bias toward sentiment direction
   const rawProbs = templates.map(() => 10 + rng() * 40)
   const sum = rawProbs.reduce((a, b) => a + b, 0)
   const probabilities = rawProbs.map((p) => Math.round((p / sum) * 100))
-  // Ensure they sum to 100
   probabilities[0] += 100 - probabilities.reduce((a, b) => a + b, 0)
 
   return templates.map((t, i) => {
@@ -83,7 +84,7 @@ export async function generateRealities(
   })
 }
 
-export async function analyzeHashtags(symbol: string): Promise<HashtagTrend[]> {
+export function analyzeHashtagsLocal(symbol: string): HashtagTrend[] {
   const seed = hashCode(symbol + 'hashtags' + Math.floor(Date.now() / 3_600_000))
   const rng = seededRandom(seed)
 
@@ -109,6 +110,66 @@ export async function analyzeHashtags(symbol: string): Promise<HashtagTrend[]> {
     return { hashtag, mentions, sentiment: sentimentVal, sentimentLabel, trend, changePercent }
   })
 }
+
+// ─── API-backed functions with fallback ──────────────────────────
+
+export async function analyzeSentiment(symbol: string): Promise<SentimentData> {
+  if (!API_BASE) return analyzeSentimentLocal(symbol)
+
+  try {
+    const res = await fetch(`${API_BASE}/api/sentiment/${encodeURIComponent(symbol)}`)
+    if (res.ok) {
+      const data = await res.json()
+      return {
+        score: data.score,
+        label: data.label,
+        confidence: data.confidence,
+        volume: data.volume,
+        trend: data.trend,
+        lastUpdated: data.lastUpdated ?? Date.now(),
+      }
+    }
+  } catch {
+    // fall through
+  }
+  return analyzeSentimentLocal(symbol)
+}
+
+export async function generateRealities(
+  symbol: string,
+  currentPrice: number,
+  sentiment: SentimentData
+): Promise<Reality[]> {
+  if (!API_BASE) return generateRealitiesLocal(symbol, currentPrice, sentiment)
+
+  try {
+    const res = await fetch(`${API_BASE}/api/sentiment/realities/${encodeURIComponent(symbol)}?price=${currentPrice}`)
+    if (res.ok) {
+      const data = await res.json()
+      if (Array.isArray(data) && data.length === 4) return data
+    }
+  } catch {
+    // fall through
+  }
+  return generateRealitiesLocal(symbol, currentPrice, sentiment)
+}
+
+export async function analyzeHashtags(symbol: string): Promise<HashtagTrend[]> {
+  if (!API_BASE) return analyzeHashtagsLocal(symbol)
+
+  try {
+    const res = await fetch(`${API_BASE}/api/sentiment/hashtags/${encodeURIComponent(symbol)}`)
+    if (res.ok) {
+      const data = await res.json()
+      if (Array.isArray(data)) return data
+    }
+  } catch {
+    // fall through
+  }
+  return analyzeHashtagsLocal(symbol)
+}
+
+// ─── Pure client-side functions (no API needed) ──────────────────
 
 export function checkForAlerts(
   symbol: string,

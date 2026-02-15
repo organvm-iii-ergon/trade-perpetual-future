@@ -1,0 +1,149 @@
+{
+  "version": "0.1.0",
+  "name": "bang_games",
+  "instructions": [
+    {
+      "name": "initializeHouse",
+      "accounts": [
+        { "name": "house", "isMut": true, "isSigner": false },
+        { "name": "authority", "isMut": true, "isSigner": true },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "feePercent", "type": "u16" }
+      ]
+    },
+    {
+      "name": "createGame",
+      "accounts": [
+        { "name": "game", "isMut": true, "isSigner": false },
+        { "name": "creator", "isMut": true, "isSigner": true },
+        { "name": "creatorTokenAccount", "isMut": true, "isSigner": false },
+        { "name": "escrow", "isMut": true, "isSigner": false },
+        { "name": "house", "isMut": false, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "gameId", "type": "string" },
+        { "name": "gameType", "type": { "defined": "GameType" } },
+        { "name": "wager", "type": "u64" }
+      ]
+    },
+    {
+      "name": "joinGame",
+      "accounts": [
+        { "name": "game", "isMut": true, "isSigner": false },
+        { "name": "opponent", "isMut": true, "isSigner": true },
+        { "name": "opponentTokenAccount", "isMut": true, "isSigner": false },
+        { "name": "escrow", "isMut": true, "isSigner": false },
+        { "name": "vrfAccount", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "settleGame",
+      "accounts": [
+        { "name": "game", "isMut": true, "isSigner": false },
+        { "name": "escrow", "isMut": true, "isSigner": false },
+        { "name": "winnerTokenAccount", "isMut": true, "isSigner": false },
+        { "name": "feeVault", "isMut": true, "isSigner": false },
+        { "name": "house", "isMut": true, "isSigner": false },
+        { "name": "vrfAccount", "isMut": false, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "cancelGame",
+      "accounts": [
+        { "name": "game", "isMut": true, "isSigner": false },
+        { "name": "creator", "isMut": true, "isSigner": true },
+        { "name": "creatorTokenAccount", "isMut": true, "isSigner": false },
+        { "name": "escrow", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "claimFees",
+      "accounts": [
+        { "name": "house", "isMut": true, "isSigner": false },
+        { "name": "authority", "isMut": false, "isSigner": true },
+        { "name": "feeVault", "isMut": true, "isSigner": false },
+        { "name": "destination", "isMut": true, "isSigner": false },
+        { "name": "tokenProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "HouseAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "authority", "type": "publicKey" },
+          { "name": "feePercent", "type": "u16" },
+          { "name": "totalGames", "type": "u64" },
+          { "name": "totalVolume", "type": "u64" },
+          { "name": "feeVault", "type": "publicKey" },
+          { "name": "bump", "type": "u8" }
+        ]
+      }
+    },
+    {
+      "name": "GameAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "gameId", "type": "string" },
+          { "name": "gameType", "type": { "defined": "GameType" } },
+          { "name": "creator", "type": "publicKey" },
+          { "name": "opponent", "type": { "option": "publicKey" } },
+          { "name": "wager", "type": "u64" },
+          { "name": "escrow", "type": "publicKey" },
+          { "name": "status", "type": { "defined": "GameStatus" } },
+          { "name": "vrfResult", "type": { "option": "bytes" } },
+          { "name": "winner", "type": { "option": "publicKey" } },
+          { "name": "createdAt", "type": "i64" },
+          { "name": "settledAt", "type": { "option": "i64" } },
+          { "name": "bump", "type": "u8" }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "GameType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          { "name": "Dice" },
+          { "name": "CoinFlip" },
+          { "name": "PricePrediction" }
+        ]
+      }
+    },
+    {
+      "name": "GameStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          { "name": "Waiting" },
+          { "name": "Active" },
+          { "name": "Completed" },
+          { "name": "Cancelled" }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    { "code": 6000, "name": "GameAlreadyJoined", "msg": "Game already has an opponent" },
+    { "code": 6001, "name": "GameNotActive", "msg": "Game is not in active state" },
+    { "code": 6002, "name": "VrfNotResolved", "msg": "VRF result not available yet" },
+    { "code": 6003, "name": "Unauthorized", "msg": "Unauthorized action" },
+    { "code": 6004, "name": "CannotCancelActive", "msg": "Cannot cancel an active game" }
+  ]
+}

@@ -1,35 +1,25 @@
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { DriftClient, User } from '@drift-labs/sdk-browser'
 import { Toaster } from 'sonner'
 
-// Production trading components
-import TradePanel from '@/components/trading/TradePanel'
-import RiskWarning from '@/components/common/RiskWarning'
-import PositionPanel from '@/components/trading/PositionPanel'
-import DashboardPanel from '@/components/analytics/DashboardPanel'
-import PnLAnalytics from '@/components/analytics/PnLAnalytics'
-import Soothsayer from '@/components/common/Soothsayer'
-import OrderHistory from '@/components/trading/OrderHistory'
-
-// Archive-ported components
-import { MarketCard } from '@/components/markets/MarketCard'
-import { SymbolCard } from '@/components/markets/SymbolCard'
-import { PriceChart } from '@/components/markets/PriceChart'
-import { RealityCard } from '@/components/markets/RealityCard'
-import { AddSymbolDialog } from '@/components/markets/AddSymbolDialog'
-import { PositionCard } from '@/components/markets/PositionCard'
-import { GamesTab } from '@/components/gaming/GamesTab'
-import { AchievementsTab } from '@/components/gaming/AchievementsTab'
+// Eagerly loaded (lightweight, always visible)
 import { AchievementUnlockNotification } from '@/components/gaming/AchievementUnlockNotification'
-import { LeaderboardTab } from '@/components/gaming/LeaderboardTab'
-import { AffiliateTab } from '@/components/social/AffiliateTab'
-import { HashtagPanel } from '@/components/social/HashtagPanel'
 import { AlertBanner } from '@/components/common/AlertBanner'
-import { PersonalizationPanel } from '@/components/personalization/PersonalizationPanel'
 import { CursorParticles } from '@/components/personalization/CursorParticles'
 import { DynamicBackground } from '@/components/personalization/DynamicBackground'
+import { TabSkeleton } from '@/components/common/TabSkeleton'
+import { MobileNav } from '@/components/common/MobileNav'
+import { useIsMobile } from '@/hooks/use-mobile'
+
+// Lazy-loaded tab wrappers
+const DashboardTab = lazy(() => import('@/components/tabs/DashboardTab'))
+const MarketsTab = lazy(() => import('@/components/tabs/MarketsTab'))
+const TradingTab = lazy(() => import('@/components/tabs/TradingTab'))
+const GamesTabWrapper = lazy(() => import('@/components/tabs/GamesTabWrapper'))
+const SocialTab = lazy(() => import('@/components/tabs/SocialTab'))
+const SettingsTab = lazy(() => import('@/components/tabs/SettingsTab'))
 
 // Hooks & libs
 import { usePersistence } from '@/hooks/use-persistence'
@@ -38,10 +28,11 @@ import { useThemePreferences } from '@/hooks/use-theme-preferences'
 import { analyzeSentiment, generateRealities, analyzeHashtags, checkForAlerts } from '@/lib/sentiment'
 import { initializeAchievements } from '@/lib/achievements'
 import { generateReferralCode } from '@/lib/affiliate'
+import { useGameProgram } from '@/hooks/use-game-program'
 
 import type {
   Symbol, SentimentData, Reality, HashtagTrend, Alert, SimMarket,
-  Position, Game, Achievement, AffiliateStats, LeaderboardEntry, UserProfile
+  Position, Game, Achievement, AffiliateStats, LeaderboardEntry,
 } from '@/types'
 
 type TabId = 'dashboard' | 'markets' | 'trading' | 'games' | 'social' | 'settings'
@@ -71,7 +62,7 @@ function App() {
   const [driftMarkets, setDriftMarkets] = useState<any[]>([])
   const [activeTab, setActiveTab] = usePersistence<TabId>('active-tab', 'dashboard')
 
-  // Simulated market state (from archive)
+  // Simulated market state
   const simMarkets = useLivePrices(DEFAULT_SIM_MARKETS)
   const [symbols, setSymbols] = usePersistence<Symbol[]>('watchlist', [])
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null)
@@ -86,6 +77,14 @@ function App() {
   const [achievements, setAchievements] = usePersistence<Achievement[]>('achievements', initializeAchievements())
   const [lastUnlocked, setLastUnlocked] = useState<Achievement | null>(null)
 
+  // Game adapter
+  const { adapter: gameAdapter, mode: gameMode, setMode: setGameMode } = useGameProgram({
+    getGames: () => games,
+    setGames,
+    getBalance: () => balance,
+    setBalance,
+  })
+
   // Social state
   const [affiliateStats] = usePersistence<AffiliateStats>('affiliate-stats', {
     referralCode: generateReferralCode('anon'),
@@ -98,10 +97,10 @@ function App() {
     conversionRate: 0,
   })
 
-  // Simulated positions (from archive market simulation)
+  // Simulated positions
   const [simPositions, setSimPositions] = usePersistence<Position[]>('sim-positions', [])
 
-  // Leaderboard (simulated)
+  // Leaderboard
   const [leaderboard] = useState<LeaderboardEntry[]>(() =>
     Array.from({ length: 10 }, (_, i) => ({
       rank: i + 1,
@@ -114,6 +113,9 @@ function App() {
       tier: (['bronze', 'silver', 'gold', 'platinum'] as const)[Math.floor(Math.random() * 4)],
     }))
   )
+
+  // Responsive
+  const isMobile = useIsMobile()
 
   // Theme preferences
   useThemePreferences()
@@ -201,32 +203,21 @@ function App() {
     if (!selectedSymbol) setSelectedSymbol(ticker)
   }
 
-  // Game handlers
-  const handleCreateGame = (type: Game['type'], wager: number) => {
-    if (wager > balance) return
-    setBalance(prev => prev - wager)
-    const game: Game = {
-      id: `game-${Date.now()}`,
-      type,
-      wager,
-      creatorId: publicKey?.toBase58().slice(0, 8) ?? 'you',
-      status: 'waiting',
-      createdAt: Date.now(),
+  // Game handlers (adapter-backed)
+  const handleCreateGame = async (type: Game['type'], wager: number) => {
+    try {
+      await gameAdapter.createGame(type, wager, publicKey?.toBase58().slice(0, 8) ?? 'you')
+    } catch (err) {
+      console.error('Create game failed:', err)
     }
-    setGames(prev => [game, ...prev])
   }
 
-  const handleJoinGame = (gameId: string) => {
-    setGames(prev => prev.map(g => {
-      if (g.id !== gameId) return g
-      if (g.wager > balance) return g
-      setBalance(b => b - g.wager)
-      const winnerId = Math.random() > 0.5 ? (publicKey?.toBase58().slice(0, 8) ?? 'you') : g.creatorId
-      if (winnerId === (publicKey?.toBase58().slice(0, 8) ?? 'you')) {
-        setBalance(b => b + g.wager * 2 * 0.95)
-      }
-      return { ...g, status: 'completed' as const, opponentId: publicKey?.toBase58().slice(0, 8) ?? 'you', result: { winnerId, outcome: {}, timestamp: Date.now() } }
-    }))
+  const handleJoinGame = async (gameId: string) => {
+    try {
+      await gameAdapter.joinGame(gameId, publicKey?.toBase58().slice(0, 8) ?? 'you', games)
+    } catch (err) {
+      console.error('Join game failed:', err)
+    }
   }
 
   // Close simulated position
@@ -271,27 +262,28 @@ function App() {
         </div>
       </div>
 
-      {/* Tab Navigation */}
-      <div className="sticky top-16 z-30 bg-base-100/60 backdrop-blur-lg border-b border-white/10">
-        <div className="container mx-auto px-4">
-          <div role="tablist" className="tabs tabs-boxed bg-transparent gap-1 py-2">
-            {TABS.map((tab) => (
-              <button
-                key={tab.id}
-                role="tab"
-                className={`tab ${activeTab === tab.id ? 'tab-active glass-strong' : 'hover:bg-base-300/30'}`}
-                onClick={() => setActiveTab(tab.id)}
-              >
-                {tab.label}
-              </button>
-            ))}
+      {/* Tab Navigation (desktop only) */}
+      {!isMobile && (
+        <div className="sticky top-16 z-30 bg-base-100/60 backdrop-blur-lg border-b border-white/10">
+          <div className="container mx-auto px-4">
+            <div role="tablist" className="tabs tabs-boxed bg-transparent gap-1 py-2">
+              {TABS.map((tab) => (
+                <button
+                  key={tab.id}
+                  role="tab"
+                  className={`tab ${activeTab === tab.id ? 'tab-active glass-strong' : 'hover:bg-base-300/30'}`}
+                  onClick={() => setActiveTab(tab.id)}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-6 relative z-10">
-
+      <div className={`container mx-auto px-4 py-6 relative z-10 ${isMobile ? 'pb-20' : ''}`}>
         {/* Active alerts */}
         {activeAlerts.length > 0 && (
           <div className="mb-4">
@@ -303,127 +295,58 @@ function App() {
           </div>
         )}
 
-        {/* Dashboard Tab */}
         {activeTab === 'dashboard' && (
-          <div className="space-y-6">
-            <RiskWarning />
-            <DashboardPanel user={user} />
-            <div className="grid lg:grid-cols-2 gap-6">
-              <PnLAnalytics user={user} />
-              <Soothsayer />
-            </div>
-          </div>
+          <Suspense fallback={<TabSkeleton type="dashboard" />}>
+            <DashboardTab user={user} />
+          </Suspense>
         )}
 
-        {/* Markets Tab */}
         {activeTab === 'markets' && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold">Markets</h2>
-              <AddSymbolDialog onAdd={handleAddSymbol} />
-            </div>
-
-            {/* Simulated markets grid */}
-            {simMarkets.length > 0 && (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {simMarkets.map((m) => (
-                  <PriceChart key={m.symbol} market={m} />
-                ))}
-              </div>
-            )}
-
-            {/* Symbol watchlist */}
-            {symbols.length > 0 && (
-              <>
-                <h3 className="text-xl font-semibold mt-8">Watchlist</h3>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {symbols.map((sym) => (
-                    <SymbolCard
-                      key={sym.ticker}
-                      symbol={sym}
-                      onClick={() => setSelectedSymbol(sym.ticker)}
-                      isSelected={selectedSymbol === sym.ticker}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-
-            {/* Reality projections */}
-            {realities.length > 0 && (
-              <>
-                <h3 className="text-xl font-semibold mt-8">Reality Projections — {selectedSymbol}</h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  {realities.map((r, i) => (
-                    <RealityCard key={r.id} reality={r} index={i} />
-                  ))}
-                </div>
-              </>
-            )}
-
-            {/* Sim positions */}
-            {simPositions.length > 0 && (
-              <>
-                <h3 className="text-xl font-semibold mt-8">Sim Positions</h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  {simPositions.map(p => (
-                    <PositionCard key={p.id} position={p} onClose={handleCloseSimPosition} />
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
+          <Suspense fallback={<TabSkeleton type="markets" />}>
+            <MarketsTab
+              simMarkets={simMarkets}
+              symbols={symbols}
+              selectedSymbol={selectedSymbol}
+              realities={realities}
+              simPositions={simPositions}
+              onSelectSymbol={setSelectedSymbol}
+              onAddSymbol={handleAddSymbol}
+              onCloseSimPosition={handleCloseSimPosition}
+            />
+          </Suspense>
         )}
 
-        {/* Trading Tab */}
         {activeTab === 'trading' && (
-          <div className="space-y-6">
-            <TradePanel
+          <Suspense fallback={<TabSkeleton type="trading" />}>
+            <TradingTab
               driftClient={driftClient}
               user={user}
               isInitializing={isInitializing}
               status={status}
               markets={driftMarkets}
             />
-            <PositionPanel user={user} driftClient={driftClient} />
-            <OrderHistory user={user} />
-          </div>
+          </Suspense>
         )}
 
-        {/* Games Tab */}
         {activeTab === 'games' && (
-          <div className="space-y-6">
-            <div role="tablist" className="tabs tabs-boxed mb-4">
-              <button className="tab tab-active">Arena</button>
-            </div>
-            <GamesTab
+          <Suspense fallback={<TabSkeleton type="games" />}>
+            <GamesTabWrapper
               games={games}
               balance={balance}
               currentUserId={userId}
+              achievements={achievements}
+              leaderboard={leaderboard}
               onCreateGame={handleCreateGame}
               onJoinGame={handleJoinGame}
-              totalGamesPlayed={games.filter(g => g.status === 'completed').length}
-              totalWinnings={0}
-              winRate={50}
-              currentStreak={0}
+              gameMode={gameMode}
+              onModeChange={setGameMode}
             />
-            <div className="grid lg:grid-cols-2 gap-6">
-              <AchievementsTab
-                achievements={achievements}
-                totalUnlocked={achievements.filter(a => a.unlocked).length}
-              />
-              <LeaderboardTab
-                entries={leaderboard}
-                currentUserId={userId}
-              />
-            </div>
-          </div>
+          </Suspense>
         )}
 
-        {/* Social Tab */}
         {activeTab === 'social' && (
-          <div className="space-y-6">
-            <AffiliateTab
+          <Suspense fallback={<TabSkeleton type="social" />}>
+            <SocialTab
               profile={{
                 userId,
                 balance,
@@ -434,30 +357,36 @@ function App() {
                 referralCode: affiliateStats.referralCode,
               }}
               stats={affiliateStats}
+              hashtags={hashtags}
             />
-            {hashtags.length > 0 && <HashtagPanel hashtags={hashtags} />}
-          </div>
+          </Suspense>
         )}
 
-        {/* Settings Tab */}
         {activeTab === 'settings' && (
-          <PersonalizationPanel />
+          <Suspense fallback={<TabSkeleton type="settings" />}>
+            <SettingsTab />
+          </Suspense>
         )}
       </div>
 
       {/* Footer */}
-      <footer className="footer footer-center p-10 text-base-content mt-16 relative z-10">
-        <div>
-          <p className="font-bold text-gradient">Bang Perp Exchange</p>
-          <p>Non-custodial perpetual futures trading on Solana</p>
-          <p className="text-xs opacity-60">
-            Powered by <a href="https://drift.trade" target="_blank" rel="noopener noreferrer" className="link">Drift Protocol</a>
-          </p>
-          <p className="text-xs opacity-60 mt-2">
-            Trading involves risk. Only trade what you can afford to lose.
-          </p>
-        </div>
-      </footer>
+      {!isMobile && (
+        <footer className="footer footer-center p-10 text-base-content mt-16 relative z-10">
+          <div>
+            <p className="font-bold text-gradient">Bang Perp Exchange</p>
+            <p>Non-custodial perpetual futures trading on Solana</p>
+            <p className="text-xs opacity-60">
+              Powered by <a href="https://drift.trade" target="_blank" rel="noopener noreferrer" className="link">Drift Protocol</a>
+            </p>
+            <p className="text-xs opacity-60 mt-2">
+              Trading involves risk. Only trade what you can afford to lose.
+            </p>
+          </div>
+        </footer>
+      )}
+
+      {/* Mobile bottom nav */}
+      {isMobile && <MobileNav activeTab={activeTab} onTabChange={setActiveTab} />}
     </div>
   )
 }

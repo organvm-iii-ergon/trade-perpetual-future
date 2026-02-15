@@ -11,7 +11,7 @@ const DashboardPanel = ({ user }: { user: User | null }) => {
   const leverage = user.getLeverage();
 
   return (
-    <div className="stats shadow w-full mb-4">
+    <div className="stats stats-vertical sm:stats-horizontal shadow w-full mb-4">
       <div className="stat">
         <div className="stat-title">Total Collateral</div>
         <div className="stat-value">${convertToNumber(totalCollateral, QUOTE_PRECISION).toFixed(2)}</div>
