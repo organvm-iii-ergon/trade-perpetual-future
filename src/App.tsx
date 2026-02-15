@@ -24,6 +24,7 @@ const SettingsTab = lazy(() => import('@/components/tabs/SettingsTab'))
 // Hooks & libs
 import { usePersistence } from '@/hooks/use-persistence'
 import { useLivePrices } from '@/hooks/use-live-prices'
+import { useDriftMarkets } from '@/hooks/use-drift-markets'
 import { useThemePreferences } from '@/hooks/use-theme-preferences'
 import { analyzeSentiment, generateRealities, analyzeHashtags, checkForAlerts } from '@/lib/sentiment'
 import { initializeAchievements } from '@/lib/achievements'
@@ -62,8 +63,10 @@ function App() {
   const [driftMarkets, setDriftMarkets] = useState<any[]>([])
   const [activeTab, setActiveTab] = usePersistence<TabId>('active-tab', 'dashboard')
 
-  // Simulated market state
-  const simMarkets = useLivePrices(DEFAULT_SIM_MARKETS)
+  // Market data: live Drift oracle data when connected, PRNG simulation when not
+  const { markets: driftLiveMarkets } = useDriftMarkets(driftClient)
+  const prngMarkets = useLivePrices(DEFAULT_SIM_MARKETS)
+  const simMarkets = driftLiveMarkets.length > 0 ? driftLiveMarkets : prngMarkets
   const [symbols, setSymbols] = usePersistence<Symbol[]>('watchlist', [])
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null)
   const [realities, setRealities] = useState<Reality[]>([])
