@@ -64,7 +64,7 @@
     "daisyui": "^5.0.0",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.6",
+    "eslint-plugin-react-refresh": "^0.5.0",
     "jsdom": "28.1.0",
     "tailwindcss": "^4.1.11",
     "typescript": "~5.7.2",
