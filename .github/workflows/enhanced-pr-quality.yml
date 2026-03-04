@@ -25,8 +25,9 @@ jobs:
 
       - name: Check PR title format
         id: title-check
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          PR_TITLE="${{ github.event.pull_request.title }}"
 
           # Check for conventional commit format
           if echo "$PR_TITLE" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(\(.+\))?:.+'; then
@@ -40,8 +41,9 @@ jobs:
 
       - name: Check PR description
         id: description-check
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
         run: |
-          PR_BODY="${{ github.event.pull_request.body }}"
 
           # Check if description is empty or too short
           if [ -z "$PR_BODY" ] || [ ${#PR_BODY} -lt 50 ]; then
@@ -64,9 +66,11 @@ jobs:
 
       - name: Check for breaking changes
         id: breaking-check
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          PR_BODY="${{ github.event.pull_request.body }}"
-          PR_TITLE="${{ github.event.pull_request.title }}"
 
           # Check for breaking change indicators
           if echo "$PR_BODY$PR_TITLE" | grep -qiE '(breaking|breaking.change|BREAKING CHANGE)'; then
@@ -138,8 +142,9 @@ jobs:
 
       - name: Check documentation updates
         id: docs-check
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
         run: |
-          PR_BODY="${{ github.event.pull_request.body }}"
 
           # Check if documentation checklist is completed
           if echo "$PR_BODY" | grep -q "\- \[x\].*documentation" || \
