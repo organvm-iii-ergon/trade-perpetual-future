@@ -9,11 +9,11 @@
   },
   "dependencies": {
     "hono": "^4.6.0",
-    "@anthropic-ai/sdk": "^0.105.0"
+    "@anthropic-ai/sdk": "^0.110.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20241205.0",
+    "@cloudflare/workers-types": "^5.20260708.1",
     "wrangler": "^4.100.0",
-    "typescript": "~6.0.3"
+    "typescript": "~7.0.2"
   }
 }
